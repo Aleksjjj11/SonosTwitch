@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SonosTwitch"
         mc:Ignorable="d"
-        Icon="C:\Users\Areksei\YandexDisk\C#\SonosTwitch\SonosTwitch\advertising-system.ico"
         Title="Sonos" Height="550" Width="900"
         Closing="MainWindow_OnClosed"
         WindowStartupLocation="CenterScreen">
@@ -19,8 +18,6 @@
                         <Grid>
                             <Ellipse Width="10" Height="10" Fill="#7289DA"></Ellipse>
                         </Grid>
-                        <!--<Ellipse Width="10" Height="10" Fill="#7289DA"></Ellipse>
-                        <Ellipse Width="10" Height="10" Fill="#7289DA"></Ellipse>-->
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -280,13 +277,18 @@
                 GROUPS
             </Label>
             <CheckBox x:Name="CheckBoxEveryOne" Content="Everyone" Style="{StaticResource WindowCheckBox}"
-                      Margin="10 4 0 6" >
+                      Margin="10 4 0 6" Click="CheckBoxEveryOne_OnClick">
             </CheckBox>
             <CheckBox x:Name="CheckBoxSubscriber" Content="Subscriber" Style="{StaticResource WindowCheckBox}"
-                      Margin="10 4 0 6" >
+                      Margin="10 4 0 6" Click="CheckBoxSubscriber_OnClick">
             </CheckBox>
             <CheckBox x:Name="CheckBoxFollower" Content="Follower" Style="{StaticResource WindowCheckBox}"
-                      Margin="10 4 0 6" >
+                      Margin="10 4 0 6" Click="CheckBoxFollower_OnClick">
+                <CheckBox.ToolTip>
+                    <ToolTip Background="Indigo" Foreground="Azure">
+                        В данный момент ни на что не влияет
+                    </ToolTip>
+                </CheckBox.ToolTip>
             </CheckBox>
             <Label x:Name="LabelAdvencedSettings" Foreground="White"
                    Background="#4B4B56">

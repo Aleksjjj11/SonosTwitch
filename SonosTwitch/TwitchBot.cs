@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Client;
@@ -12,7 +12,7 @@ namespace SonosTwitch
 {
     public class TwitchBot
     {
-        TwitchClient client;
+        public TwitchClient Client { get; }
 	
         public TwitchBot()
         {
@@ -23,17 +23,17 @@ namespace SonosTwitch
                     ThrottlingPeriod = TimeSpan.FromSeconds(10)
                 };
             WebSocketClient customClient = new WebSocketClient(clientOptions);
-            client = new TwitchClient(customClient);
+            Client = new TwitchClient(customClient);
             //Here may write any channel
-            client.Initialize(credentials, "rango4u");
-            client.OnLog += Client_OnLog;
-            client.OnJoinedChannel += Client_OnJoinedChannel;
-            client.OnMessageReceived += Client_OnMessageReceived;
-            client.OnWhisperReceived += Client_OnWhisperReceived;
+            Client.Initialize(credentials, "rango4u");
+            Client.OnLog += Client_OnLog;
+            Client.OnJoinedChannel += Client_OnJoinedChannel;
+            Client.OnMessageReceived += Client_OnMessageReceived;
+            Client.OnWhisperReceived += Client_OnWhisperReceived;
             //client.OnNewSubscriber += Client_OnNewSubscriber;
-            client.OnConnected += Client_OnConnected;
+            Client.OnConnected += Client_OnConnected;
 
-            client.Connect();
+            Client.Connect();
         }
   
         private void Client_OnLog(object sender, OnLogArgs e)
@@ -63,7 +63,8 @@ namespace SonosTwitch
                     MainWindow.Setting.DictionaryCommands[$"{e.ChatMessage.Message.Replace(MainWindow.Setting.Prefix, "")}"];
                 if (res != null)
                 {
-                    if (Notify != null) Notify(sender, e);
+                    if (Notify != null && (MainWindow.Setting.ReceiveEveryone || MainWindow.Setting.ReceiveFollower ||
+                                           MainWindow.Setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber) ) Notify(sender, e);
                 } 
             }
         }
@@ -72,7 +73,7 @@ namespace SonosTwitch
         {
             Console.WriteLine(e.WhisperMessage.Message);
             if (e.WhisperMessage.Username == "trumeetration")
-                client.SendWhisper(e.WhisperMessage.Username, "Hey! Whispers are so cool!!");
+                Client.SendWhisper(e.WhisperMessage.Username, "Hey! Whispers are so cool!!");
         }
         
         /*private void Client_OnNewSubscriber(object sender, OnNewSubscriberArgs e)

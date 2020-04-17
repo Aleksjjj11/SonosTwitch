@@ -13,7 +13,7 @@
         <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
         <WarningLevel>4</WarningLevel>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <SignAssembly>true</SignAssembly>
+        <SignAssembly>false</SignAssembly>
         <AssemblyOriginatorKeyFile>advertising-system.ico</AssemblyOriginatorKeyFile>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -157,12 +157,12 @@
             <SubType>Designer</SubType>
         </ApplicationDefinition>
         <Compile Include="AppSetting.cs" />
-        <Compile Include="pictures.Designer.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>pictures.resx</DependentUpon>
+        <Compile Include="AuthorizeTwitch.xaml.cs">
+          <DependentUpon>AuthorizeTwitch.xaml</DependentUpon>
         </Compile>
         <Compile Include="TwitchBot.cs" />
+        <Page Include="AuthorizeTwitch.xaml" />
+        <Page Include="icons.xaml" />
         <Page Include="MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
@@ -175,6 +175,7 @@
             <DependentUpon>MainWindow.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Page Include="Styles.xaml" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Properties\AssemblyInfo.cs">
@@ -185,10 +186,6 @@
             <DesignTime>True</DesignTime>
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
-        <EmbeddedResource Include="pictures.resx">
-          <Generator>ResXFileCodeGenerator</Generator>
-          <LastGenOutput>pictures.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -199,8 +196,11 @@
         <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <Content Include="advertising-system.ico" />
-      <Content Include="advertising-system.png" />
+      <Content Include="Icons\advertising-system.ico" />
+      <Content Include="Icons\advertising-system.png" />
+      <Content Include="Icons\next (1).png" />
+      <Content Include="Icons\next.png" />
+      <Content Include="Icons\next.svg" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

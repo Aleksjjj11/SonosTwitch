@@ -8,7 +8,11 @@ namespace SonosTwitch
     public class AppSetting : INotifyPropertyChanged
     {
         private Dictionary<string, string> _dictionary;
+        public string TwitchChannel { get; set; }
         public string Prefix { get; set; }
+        public bool ReceiveFollower { get; set; }
+        public bool ReceiveSubscriber { get; set; }
+        public bool ReceiveEveryone { get; set; }
         public Dictionary<string, string> DictionaryCommands
         {
             get { return _dictionary; }

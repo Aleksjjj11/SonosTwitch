@@ -21,21 +21,21 @@ namespace SonosTwitch
     {
         const string FileName = @"SavedSetting.bin";
         public static AppSetting Setting; 
-        private TwitchBot _twitchBot;
+        public TwitchBot Bot { get; set; }
 
         private delegate Task OnLog(DateTime time, string username, string nameCommand);
         private delegate Task OnPlaySong(string nameCommand);
         public MainWindow()
         {
             InitializeComponent();
-            _twitchBot = new TwitchBot();
-            _twitchBot.Notify += TwitchBotOnNotify;
+            Bot = new TwitchBot();
+            Bot.Notify += TwitchBotOnNotify;
             Closing += MainWindow_OnClosed;
             bool needUpdateListCommand = !LoadSaving();
             UploadListCommands(needUpdateListCommand);
         }
         
-        public void UploadListCommands(bool isEmpty)
+        private void UploadListCommands(bool isEmpty)
         {
             if (isEmpty)
             {
@@ -169,7 +169,7 @@ namespace SonosTwitch
 
         private void ButtonOpenAudioFile_OnClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog {DefaultExt = ".mp3", Filter = "(.mp3)|*.mp3|(.wav)|*.wav"};
+            OpenFileDialog dlg = new OpenFileDialog {DefaultExt = ".wav", Filter = "(.wav)|*.wav"};
             var result = dlg.ShowDialog();
             if (result == true)
             {
@@ -225,6 +225,9 @@ namespace SonosTwitch
 
         private void ButtonUploadIcon_OnClick(object sender, RoutedEventArgs e)
         {
+            AuthorizeTwitch page = new AuthorizeTwitch();
+            page.Owner = this;
+            page.Show();
             Setting.Prefix = TextBoxPrefix.Text;
             SaveChangeListCommands();
             SaveInFile();
@@ -269,7 +272,7 @@ namespace SonosTwitch
             }
         }
 
-        private void SaveInFile()
+        private static void SaveInFile()
         {
             Stream saveFileStream = File.Create(FileName);
             BinaryFormatter serializer = new BinaryFormatter();
@@ -405,5 +408,40 @@ namespace SonosTwitch
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private void CheckBoxEveryOne_OnClick(object sender, RoutedEventArgs e)
+        {
+
+            if (sender is CheckBox)
+            {
+                // (sender as CheckBox).IsChecked = !(sender as CheckBox).IsChecked; 
+                Setting.ReceiveEveryone = (sender as CheckBox).IsChecked.Value;
+            }
+            else
+                MessageBox.Show("Объект не является переключателем");
+        }
+
+        private void CheckBoxSubscriber_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox)
+            {
+                // (sender as CheckBox).IsChecked = !(sender as CheckBox).IsChecked; 
+                Setting.ReceiveSubscriber = (sender as CheckBox).IsChecked.Value;
+            }
+            else
+                MessageBox.Show("Объект не является переключателем");
+        }
+
+        private void CheckBoxFollower_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox)
+            {
+                // (sender as CheckBox).IsChecked = !(sender as CheckBox).IsChecked; 
+                Setting.ReceiveFollower = (sender as CheckBox).IsChecked.Value;
+            }
+            else
+                MessageBox.Show("Объект не является переключателем");
+        }
+        
     }
 }
