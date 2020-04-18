@@ -5,68 +5,46 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:SonosTwitch"
       mc:Ignorable="d"
-      Title="AuthorizeTwitch" Height="450" Width="500"
+      Title="AuthorizeTwitch" Height="350" Width="450"
       Background="#4B4B56"
       Closed="AuthorizeTwitch_OnClosed"
-      WindowStartupLocation="CenterOwner">
+      WindowStartupLocation="CenterOwner"
+      WindowStyle="None"
+      ResizeMode="NoResize">
     <Window.Resources>
-        <Style x:Key="StyleButtonLogin" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid>
-                            <Rectangle Fill="#303037" RadiusX="2" RadiusY="2">
-                            </Rectangle>
-                            <Line Stroke="White" X1="5" Y1="15" X2="10" Y2="20" StrokeThickness="2"></Line>
-                            <Line Stroke="White" X1="10" Y1="20" X2="20" Y2="7" StrokeThickness="2"></Line>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="Button">
-                                <Grid>
-                                    <Rectangle Fill="#303000" RadiusX="2" RadiusY="2">
-                                    </Rectangle>
-                                    <Line Stroke="Aquamarine" X1="5" Y1="15" X2="10" Y2="20" StrokeThickness="2"></Line>
-                                    <Line Stroke="Aquamarine" X1="10" Y1="20" X2="20" Y2="7" StrokeThickness="2"></Line>
-                                </Grid>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+        
     </Window.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.2*"></ColumnDefinition>
-            <ColumnDefinition Width="0.6*"></ColumnDefinition>
-            <ColumnDefinition Width="0.2*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="0.4*"></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
-            <RowDefinition Height="0.4*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <TextBlock Grid.Column="1" Grid.Row="0" Text="SoNoS" Foreground="White" FontSize="24"
-                   HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                   TextAlignment="Left" Margin="0 0 25 0"></TextBlock>
-        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
-            <TextBox Name="TextBoxLogin"  Height="30" Margin="20 15 0 0" Style="{StaticResource PageTextBox}"
-                     MinWidth="200"
-                     HorizontalAlignment="Center">
-            </TextBox>
-            <Button Name="ButtonLogin" Height="30" Width="30" HorizontalAlignment="Center" Margin="2 15 20 0" Background="#303037"
-                    Click="ButtonLogin_OnClick" Style="{StaticResource StyleButtonLogin}">
-            </Button>
-        </StackPanel>
-        <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Horizontal" Visibility="Visible">
-            <TextBlock Name="TextBlockMightName" Height="30" VerticalAlignment="Top" HorizontalAlignment="Center"
-                       Margin="20 30 10 0" Text="Test" Foreground="Fuchsia" FontSize="14" Visibility="Hidden"></TextBlock>
-        </StackPanel>
-    </Grid>
+    <Border BorderBrush="#303037" BorderThickness="2">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                <ColumnDefinition Width="0.6*"></ColumnDefinition>
+                <ColumnDefinition Width="0.2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.4*"></RowDefinition>
+                <RowDefinition Height="0.2*"></RowDefinition>
+                <RowDefinition Height="0.4*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="SoNoS" Foreground="White" FontSize="24"
+                       HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                       TextAlignment="Left" Margin="0 0 25 0"></TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                <TextBox Name="TextBoxLogin"  Height="30" Margin="20 15 0 0" Style="{StaticResource TextBoxLogin}"
+                         MinWidth="200"
+                         HorizontalAlignment="Center">
+                </TextBox>
+                <Button Name="ButtonLogin" Height="30" Width="30" HorizontalAlignment="Center" Margin="2 15 20 0" Background="#303037"
+                        Click="ButtonLogin_OnClick" Style="{StaticResource StyleButtonLogin}">
+                </Button>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Vertical" Visibility="Visible">
+                <TextBlock Name="TextBlockMightName" Height="30" VerticalAlignment="Top" HorizontalAlignment="Center"
+                           Margin="20 30 10 0" Text="Test" Foreground="Fuchsia" FontSize="14" Visibility="Hidden"></TextBlock>
+                <Button Name="ButtonExit" Content="Выйти" Style="{StaticResource ButtonRed}"
+                        Height="30" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="40 20 60 0"
+                        Click="ButtonExit_OnClick"></Button>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

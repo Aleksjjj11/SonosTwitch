@@ -13,6 +13,7 @@ namespace SonosTwitch
         public bool ReceiveFollower { get; set; }
         public bool ReceiveSubscriber { get; set; }
         public bool ReceiveEveryone { get; set; }
+        public bool IsGetOffer { get; set; }
         public Dictionary<string, string> DictionaryCommands
         {
             get { return _dictionary; }

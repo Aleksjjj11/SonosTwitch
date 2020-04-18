@@ -198,6 +198,7 @@
     <ItemGroup>
       <Content Include="Icons\advertising-system.ico" />
       <Content Include="Icons\advertising-system.png" />
+      <Content Include="Icons\gear.png" />
       <Content Include="Icons\next (1).png" />
       <Content Include="Icons\next.png" />
       <Content Include="Icons\next.svg" />

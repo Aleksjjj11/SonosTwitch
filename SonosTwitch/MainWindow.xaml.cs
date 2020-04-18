@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,7 +21,8 @@ namespace SonosTwitch
     public partial class MainWindow
     {
         const string FileName = @"SavedSetting.bin";
-        public static AppSetting Setting; 
+        public static AppSetting Setting;
+        private DispatcherTimer _timerColor;
         public TwitchBot Bot { get; set; }
 
         private delegate Task OnLog(DateTime time, string username, string nameCommand);
@@ -32,10 +34,29 @@ namespace SonosTwitch
             Bot.Notify += TwitchBotOnNotify;
             Closing += MainWindow_OnClosed;
             bool needUpdateListCommand = !LoadSaving();
-            UploadListCommands(needUpdateListCommand);
+            LoadInterface(needUpdateListCommand);
+            _timerColor = new DispatcherTimer(DispatcherPriority.Background);
+            _timerColor.Interval = new TimeSpan(0,0,0, 0, 50);
+            _timerColor.Tick += Coloring;
+            _timerColor.Tag = false;
+            _timerColor.IsEnabled = true;
+            _timerColor.Start();
         }
-        
-        private void UploadListCommands(bool isEmpty)
+
+        private void Coloring(object sender, EventArgs eventArgs)
+        {
+            bool? incremente = _timerColor.Tag as bool?;
+            if (LabelTwitchChannel.Opacity < 0.05)
+                incremente = true;
+            if (LabelTwitchChannel.Opacity > 0.85)
+                incremente = false;
+            if (incremente is true)
+                LabelTwitchChannel.Opacity += 0.01;
+            else 
+                LabelTwitchChannel.Opacity -= 0.01;
+            _timerColor.Tag = incremente;
+        }
+        private void LoadInterface(bool isEmpty)
         {
             if (isEmpty)
             {
@@ -48,7 +69,11 @@ namespace SonosTwitch
                 AddNewCommandLine(pair.Key, pair.Value);
             }
 
+            LabelTwitchChannel.Content = Setting.TwitchChannel;
             TextBoxPrefix.Text = Setting.Prefix;
+            CheckBoxFollower.IsChecked = Setting.ReceiveFollower;
+            CheckBoxSubscriber.IsChecked = Setting.ReceiveSubscriber;
+            CheckBoxEveryOne.IsChecked = Setting.ReceiveEveryone;
         }
 
         private void TwitchBotOnNotify(object sender, OnMessageReceivedArgs e)
@@ -146,10 +171,21 @@ namespace SonosTwitch
                 buttonMargin.Right = 5;
                 buttonDialog.Margin = buttonMargin;
                 
+                var buttonDeleteLine = new Button();
+                buttonDeleteLine.Width = 30;
+                buttonDeleteLine.Height = 30;
+                buttonDeleteLine.Content = "Del";
+                buttonDeleteLine.Click += ButtonDeleteCommand_OnClick;
+                buttonDeleteLine.Style = ButtonDeleteCommand.Style;
+                buttonDeleteLine.Margin = new Thickness(135, 10, 0, 0);
+                
                 var newRow = new RowDefinition();
                 GridCommands.RowDefinitions.Add(newRow);
                 Grid.SetRow(command, GridCommands.RowDefinitions.Count - 1);
                 Grid.SetColumn(command, 0);
+                
+                Grid.SetRow(buttonDeleteLine, GridCommands.RowDefinitions.Count - 1);
+                Grid.SetColumn(buttonDeleteLine, 0);
                 
                 Grid.SetRow(path, GridCommands.RowDefinitions.Count - 1);
                 Grid.SetColumn(path, 1);
@@ -160,6 +196,7 @@ namespace SonosTwitch
                 GridCommands.Children.Add(command);
                 GridCommands.Children.Add(path);
                 GridCommands.Children.Add(buttonDialog);
+                GridCommands.Children.Add(buttonDeleteLine);
             }
             catch (Exception e)
             {
@@ -217,10 +254,6 @@ namespace SonosTwitch
             
             Setting = new AppSetting(new Dictionary<string, string>());
             return false;
-        }
-        private void TextBoxCommand_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            
         }
 
         private void ButtonUploadIcon_OnClick(object sender, RoutedEventArgs e)
@@ -413,10 +446,7 @@ namespace SonosTwitch
         {
 
             if (sender is CheckBox)
-            {
-                // (sender as CheckBox).IsChecked = !(sender as CheckBox).IsChecked; 
                 Setting.ReceiveEveryone = (sender as CheckBox).IsChecked.Value;
-            }
             else
                 MessageBox.Show("Объект не является переключателем");
         }
@@ -424,10 +454,7 @@ namespace SonosTwitch
         private void CheckBoxSubscriber_OnClick(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox)
-            {
-                // (sender as CheckBox).IsChecked = !(sender as CheckBox).IsChecked; 
                 Setting.ReceiveSubscriber = (sender as CheckBox).IsChecked.Value;
-            }
             else
                 MessageBox.Show("Объект не является переключателем");
         }
@@ -435,13 +462,87 @@ namespace SonosTwitch
         private void CheckBoxFollower_OnClick(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox)
-            {
-                // (sender as CheckBox).IsChecked = !(sender as CheckBox).IsChecked; 
                 Setting.ReceiveFollower = (sender as CheckBox).IsChecked.Value;
-            }
             else
                 MessageBox.Show("Объект не является переключателем");
         }
-        
+
+        private void CheckBoxGetOffer_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox)
+                Setting.IsGetOffer = (sender as CheckBox).IsChecked.Value;
+            else
+                MessageBox.Show("Объект не является переключателем");
+        }
+
+        private void ButtonDeleteCommand_OnClick(object sender, RoutedEventArgs e)
+        {
+            var children = GridCommands.Children.OfType<UIElement>().ToList();
+            var source = sender as Button;
+            string command = "";
+            int row = Grid.GetRow(source);
+            try
+            {
+                if (row >= 0)
+                {
+                    foreach (var element in children)
+                    {
+                        if (element is TextBox)
+                        {
+                            if (Grid.GetRow(element as TextBox) == row)
+                            {
+                                if ((element as TextBox).DataContext.ToString() == "TextCommand")
+                                {
+                                    command = (element as TextBox).Text;
+                                    Setting.DictionaryCommands.Remove(command);
+                                }
+
+                                GridCommands.Children.Remove(element);
+                            }
+                        }
+
+                        if (element is Button)
+                        {
+                            if (Grid.GetRow(element as Button) == row)
+                            {
+                                GridCommands.Children.Remove(element);
+                            }
+                        }
+                    }
+
+                    //GridCommands.RowDefinitions.Remove(GridCommands.RowDefinitions[row]);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + " " + row);
+                
+            }
+            
+                
+            
+            
+            
+            /*var children = GridCommands.Children.OfType<UIElement>().ToList();
+            foreach (var element in children)
+            {
+                if (element is TextBox)
+                {
+                    if ((element as TextBox).Visibility == Visibility.Visible)
+                        GridCommands.Children.Remove(element as TextBox);
+                }
+
+                if (element is Button)
+                {
+                    if ((element as Button).Visibility == Visibility.Visible)
+                        GridCommands.Children.Remove(element as Button);
+                }
+            }
+            while (GridCommands.RowDefinitions.Count > 1)
+            {
+                GridCommands.RowDefinitions[row];
+                AddNewCommandLine();
+            }*/
+        }
     }
 }
