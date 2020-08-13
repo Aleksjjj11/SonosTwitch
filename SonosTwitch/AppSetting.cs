@@ -19,7 +19,7 @@ namespace SonosTwitch
         public string CurrentVersion { get; set; }
         public Dictionary<string, string> DictionaryCommands
         {
-            get { return _dictionary; }
+            get => _dictionary;
             set
             {
                 _dictionary = value;

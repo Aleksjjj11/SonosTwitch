@@ -37,10 +37,7 @@ namespace SonosTwitch
             SyncCommands();
             try
             {
-                MessageBox.Show(
-                    $"Prefix {App.Setting.Prefix}\nReceiving {App.Setting.ReceiveEveryone} {App.Setting.ReceiveSubscriber} {App.Setting.ReceiveFollower}");
                 ViewModel = new MainWindowVM(new TwitchBot(App.Setting.TwitchChannel, App.Setting.TwitchToken), App.Setting);
-                //Bot = new TwitchBot(App.Setting.TwitchChannel, App.Setting.TwitchToken);
                 ViewModel.ClientBot.Notify += TwitchBotOnNotify;
             }
             catch (Exception ex)
@@ -48,9 +45,7 @@ namespace SonosTwitch
                 LabelTwitchChannel.Foreground = new SolidColorBrush(Colors.Red);
             }
             InitializeComponent();
-            //viewModel = new MainWindowVM(); //Init view model for the window 
             Closing += MainWindow_OnClosed;
-            //LoadInterface(needUpdateListCommand);
             _timerColor = new DispatcherTimer(DispatcherPriority.Background)
             {
                 Interval = new TimeSpan(0, 0, 0, 0, 50)
@@ -299,7 +294,8 @@ namespace SonosTwitch
         private Task AddNewReceivedLog(DateTime time, string username, string nameCommand)
         {
             if (CheckBoxGetOffer.IsChecked == false) return null;
-
+            ViewModel.QueueOffers.Add(new Offer(time, nameCommand, username));
+            /*
             Grid lineLogging = new Grid();
             try
             {
@@ -376,13 +372,14 @@ namespace SonosTwitch
             lineLogging.Children.Add(buttons);
             
             StackPanelLogging.Children.Add(lineLogging);
-            
+            */
             return Task.CompletedTask;
         }
 
         private void CancelOnClick(object sender, RoutedEventArgs e)
         {
-            var dataContext = ((sender as Button)?.DataContext as string).Split(' ');
+            ViewModel.QueueOffers.Remove(ViewModel.QueueOffers.First(x => x.Id == ((Button) sender).Tag as string));
+            /*var dataContext = ((sender as Button)?.DataContext as string).Split(' ');
             var res = StackPanelLogging.FindName(dataContext.Last());
             try
             {
@@ -395,12 +392,24 @@ namespace SonosTwitch
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
+            }*/
         }
 
         private void AcceptOnClick(object sender, RoutedEventArgs e)
         {
             try
+            {
+                string path = App.Setting.DictionaryCommands[
+                    ViewModel.QueueOffers.First(x => x.Id == ((Button) sender).Tag as string).Message.Replace(ViewModel.AppSetting.Prefix, "")];
+                SoundPlayer player = new SoundPlayer(path);
+                player.Play();
+                ViewModel.QueueOffers.Remove(ViewModel.QueueOffers.First(x => x.Id == ((Button) sender).Tag as string));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            /*try
             {
                 var dataContext = ((sender as Button)?.DataContext as string).Split(' ');
                 string path = App.Setting.DictionaryCommands[dataContext.First()];
@@ -416,7 +425,7 @@ namespace SonosTwitch
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
+            }*/
         }
 
         private void CheckBoxEveryOne_OnClick(object sender, RoutedEventArgs e)

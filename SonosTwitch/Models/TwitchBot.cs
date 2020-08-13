@@ -67,16 +67,25 @@ namespace SonosTwitch
         public event CommandReceived Notify;
         private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            if (e.ChatMessage.Message[0].ToString() == App.Setting.Prefix)
+            try
             {
-                string res =
-                    App.Setting.DictionaryCommands[$"{e.ChatMessage.Message.Replace(App.Setting.Prefix, "")}"];
-                if (res != null)
+                if (e.ChatMessage.Message[0].ToString() == App.Setting.Prefix)
                 {
-                    if (Notify != null && (App.Setting.ReceiveEveryone || App.Setting.ReceiveFollower ||
-                                           App.Setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber) ) Notify(sender, e);
-                } 
+                    string res =
+                        App.Setting.DictionaryCommands[$"{e.ChatMessage.Message.Replace(App.Setting.Prefix, "")}"];
+                    if (res != null)
+                    {
+                        if (Notify != null && (App.Setting.ReceiveEveryone || App.Setting.ReceiveFollower ||
+                                               App.Setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber))
+                            Notify(sender, e);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                
+            }
+
         }
         
         private void Client_OnWhisperReceived(object sender, OnWhisperReceivedArgs e)

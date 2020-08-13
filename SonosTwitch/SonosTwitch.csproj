@@ -159,6 +159,7 @@
             <SubType>Designer</SubType>
         </ApplicationDefinition>
         <Compile Include="AppSetting.cs" />
+        <Compile Include="Models\Offer.cs" />
         <Compile Include="Models\Sound.cs" />
         <Compile Include="ViewModels\AuthorizeTwitchVM.cs" />
         <Compile Include="ViewModels\MainWindowVM.cs" />
