@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using SonosTwitch.ViewModels;
 using TwitchLib.Client.Events;
 
 namespace SonosTwitch
@@ -20,23 +22,39 @@ namespace SonosTwitch
     /// </summary>
     public partial class MainWindow
     {
+        //TODO Перенести Setting в ViewModel и всё, что с этим связано
         const string FileName = @"SavedSetting.bin";
-        public static AppSetting Setting;
         private DispatcherTimer _timerColor;
-        public TwitchBot Bot { get; set; }
+        public MainWindowVM ViewModel { get; set; }
+        public ObservableCollection<Sound> Sounds { get; set; }
+        //public TwitchBot Bot { get; set; }
 
         private delegate Task OnLog(DateTime time, string username, string nameCommand);
         private delegate Task OnPlaySong(string nameCommand);
         public MainWindow()
         {
-            InitializeComponent();
-            Bot = new TwitchBot();
-            Bot.Notify += TwitchBotOnNotify;
-            Closing += MainWindow_OnClosed;
             bool needUpdateListCommand = !LoadSaving();
-            LoadInterface(needUpdateListCommand);
-            _timerColor = new DispatcherTimer(DispatcherPriority.Background);
-            _timerColor.Interval = new TimeSpan(0,0,0, 0, 50);
+            SyncCommands();
+            try
+            {
+                MessageBox.Show(
+                    $"Prefix {App.Setting.Prefix}\nReceiving {App.Setting.ReceiveEveryone} {App.Setting.ReceiveSubscriber} {App.Setting.ReceiveFollower}");
+                ViewModel = new MainWindowVM(new TwitchBot(App.Setting.TwitchChannel, App.Setting.TwitchToken), App.Setting);
+                //Bot = new TwitchBot(App.Setting.TwitchChannel, App.Setting.TwitchToken);
+                ViewModel.ClientBot.Notify += TwitchBotOnNotify;
+            }
+            catch (Exception ex)
+            {
+                LabelTwitchChannel.Foreground = new SolidColorBrush(Colors.Red);
+            }
+            InitializeComponent();
+            //viewModel = new MainWindowVM(); //Init view model for the window 
+            Closing += MainWindow_OnClosed;
+            //LoadInterface(needUpdateListCommand);
+            _timerColor = new DispatcherTimer(DispatcherPriority.Background)
+            {
+                Interval = new TimeSpan(0, 0, 0, 0, 50)
+            };
             _timerColor.Tick += Coloring;
             _timerColor.Tag = false;
             _timerColor.IsEnabled = true;
@@ -56,25 +74,26 @@ namespace SonosTwitch
                 LabelTwitchChannel.Opacity -= 0.01;
             _timerColor.Tag = incremente;
         }
-        private void LoadInterface(bool isEmpty)
+        /*private void LoadInterface(bool isEmpty)
         {
             if (isEmpty)
             {
-                Setting = Setting ?? new AppSetting(new Dictionary<string, string>());
-                Setting.DictionaryCommands.Add("command", "path");
-                Setting.Prefix = "!";
+                App.Setting = App.Setting ?? new AppSetting(new Dictionary<string, string>());
+                App.Setting.DictionaryCommands.Add("command", "path");
+                App.Setting.Prefix = "!";
             }
-            foreach (var pair in Setting.DictionaryCommands)
+            foreach (var pair in App.Setting.DictionaryCommands)
             {
                 AddNewCommandLine(pair.Key, pair.Value);
             }
 
-            LabelTwitchChannel.Content = Setting.TwitchChannel;
-            TextBoxPrefix.Text = Setting.Prefix;
-            CheckBoxFollower.IsChecked = Setting.ReceiveFollower;
-            CheckBoxSubscriber.IsChecked = Setting.ReceiveSubscriber;
-            CheckBoxEveryOne.IsChecked = Setting.ReceiveEveryone;
-        }
+            LabelTwitchChannel.Content = App.Setting.TwitchChannel;
+            TextBoxPrefix.Text = App.Setting.Prefix;
+            TextBoxTimeout.Text = App.Setting.Timeout.ToString();
+            CheckBoxFollower.IsChecked = App.Setting.ReceiveFollower;
+            CheckBoxSubscriber.IsChecked = App.Setting.ReceiveSubscriber;
+            CheckBoxEveryOne.IsChecked = App.Setting.ReceiveEveryone;
+        }*/
 
         private void TwitchBotOnNotify(object sender, OnMessageReceivedArgs e)
         {
@@ -88,7 +107,7 @@ namespace SonosTwitch
             {
                 try
                 {
-                    string path = Setting.DictionaryCommands[nameCommand];
+                    string path = App.Setting.DictionaryCommands[nameCommand];
                     SoundPlayer player = new SoundPlayer(path);
                     player.Play();
                 }
@@ -107,10 +126,11 @@ namespace SonosTwitch
         /// <param name="e"></param>
         private void ButtonAddCommand_OnClick(object sender, RoutedEventArgs e)
         {
-            AddNewCommandLine();
+            Sounds.Add(new Sound($"NewCommand{Sounds.Count}", "Opa"));
+            //AddNewCommandLine();
         }
 
-        private void ButtonResetAllCommands_OnClick(object sender, RoutedEventArgs e)
+        /*private void ButtonResetAllCommands_OnClick(object sender, RoutedEventArgs e)
         {
             var children = GridCommands.Children.OfType<UIElement>().ToList();
             foreach (var element in children)
@@ -132,15 +152,15 @@ namespace SonosTwitch
                 GridCommands.RowDefinitions.Clear();
                 AddNewCommandLine();
             }
-        }
+        }*/
 
-        private void AddNewCommandLine(string textCommand = "command", string textPath = "path")
+        /*private void AddNewCommandLine(string textCommand = "command", string textPath = "path")
         {
             try
             {
                 var command = new TextBox();
                 command.Height = 30;
-                command.Width = 150;
+                command.Width = 160;
                 command.Style = TextBoxCommand.Style;
                 command.Text = textCommand;
                 command.DataContext = "TextCommand";
@@ -166,9 +186,9 @@ namespace SonosTwitch
                 buttonDialog.Click += ButtonOpenAudioFile_OnClick;
                 buttonDialog.Style = ButtonOpenAudioFileObj.Style;
                 var buttonMargin = buttonDialog.Margin;
-                buttonMargin.Left = 8;
+                buttonMargin.Left = 0;
                 buttonMargin.Top = 6;
-                buttonMargin.Right = 5;
+                buttonMargin.Right = 30;
                 buttonDialog.Margin = buttonMargin;
                 
                 var buttonDeleteLine = new Button();
@@ -202,7 +222,7 @@ namespace SonosTwitch
             {
                 MessageBox.Show(e.Message);
             }
-        }
+        }*/
 
         private void ButtonOpenAudioFile_OnClick(object sender, RoutedEventArgs e)
         {
@@ -211,21 +231,7 @@ namespace SonosTwitch
             if (result == true)
             {
                 string filename = dlg.FileName;
-                var source = sender as Button;
-                int row = Grid.GetRow(source);
-                if (row >= 0)
-                {
-                    foreach (var element in GridCommands.Children)
-                    {
-                        if (element is TextBox)
-                        {
-                            if (Grid.GetRow(element as TextBox) == row && (element as TextBox).DataContext.ToString() == "TextPath")
-                            {
-                                (element as TextBox).Text = filename;
-                            }
-                        }
-                    }
-                }
+                ((TextBox) sender).Text = filename;
             }
         }
         /// <summary>
@@ -239,12 +245,12 @@ namespace SonosTwitch
                 Console.WriteLine("Reading saved");
                 Stream openFileStream = File.OpenRead(FileName);
                 BinaryFormatter deserializer = new BinaryFormatter();
-                Setting = (AppSetting) deserializer.Deserialize(openFileStream);
-                Setting.TimeLastLoaded = DateTime.Now;
+                App.Setting = (AppSetting) deserializer.Deserialize(openFileStream);
+                App.Setting.TimeLastLoaded = DateTime.Now;
                 openFileStream.Close();
                 
                 Console.WriteLine(@"Downloaded:");
-                foreach (var pair in Setting.DictionaryCommands)
+                foreach (var pair in App.Setting.DictionaryCommands)
                 {
                     Console.WriteLine($"{pair.Key} : {pair.Value}");
                 }
@@ -252,56 +258,25 @@ namespace SonosTwitch
                 return true;
             }
             
-            Setting = new AppSetting(new Dictionary<string, string>());
+            App.Setting = new AppSetting(new Dictionary<string, string>());
             return false;
         }
 
         private void ButtonUploadIcon_OnClick(object sender, RoutedEventArgs e)
         {
-            AuthorizeTwitch page = new AuthorizeTwitch();
-            page.Owner = this;
-            page.Show();
-            Setting.Prefix = TextBoxPrefix.Text;
+            App.Setting = ViewModel.AppSetting;
+            App.Setting.Timeout = Convert.ToUInt32(TextBoxTimeout.Text);
             SaveChangeListCommands();
             SaveInFile();
         }
 
         private void SaveChangeListCommands()
         {
-            Setting.DictionaryCommands = Setting.DictionaryCommands ?? new Dictionary<string, string>();
-            Setting.DictionaryCommands.Clear();
-            string command = null, path = null, allCommand = "";
-            foreach (var element in GridCommands.Children)
+            App.Setting.DictionaryCommands = App.Setting.DictionaryCommands ?? new Dictionary<string, string>();
+            App.Setting.DictionaryCommands.Clear();
+            foreach (var sound in Sounds)
             {
-                if (element as UIElement != null)
-                    if ((element as UIElement)?.Visibility == Visibility.Collapsed) continue;
-                if (element is TextBox)
-                {
-                   if ((element as TextBox).DataContext.ToString() == "TextPath")
-                   {
-                       path = (element as TextBox).Text;
-                   }
-                   if ((element as TextBox).DataContext.ToString() == "TextCommand")
-                   {
-                       command = (element as TextBox).Text;
-                   }
-
-                   if (command != null && path != null)
-                   {
-                       try
-                       {
-                           Setting.DictionaryCommands.Add(command, path);
-                       }
-                       catch (ArgumentException exception)
-                       {
-                           Setting.DictionaryCommands[command] = path;
-                       }
-
-                       allCommand += command + "\n";
-                       command = null;
-                       path = null;
-                   }
-                }
+                App.Setting.DictionaryCommands.Add(sound.Command, sound.PathSound);
             }
         }
 
@@ -309,11 +284,13 @@ namespace SonosTwitch
         {
             Stream saveFileStream = File.Create(FileName);
             BinaryFormatter serializer = new BinaryFormatter();
-            serializer.Serialize(saveFileStream, Setting);
+            serializer.Serialize(saveFileStream, App.Setting);
             saveFileStream.Close();
         }
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
+            App.Setting = ViewModel.AppSetting;
+            App.Setting.Timeout = Convert.ToUInt32(TextBoxTimeout.Text);
             SaveChangeListCommands();
             SaveInFile();
             Application.Current.Shutdown();
@@ -426,7 +403,7 @@ namespace SonosTwitch
             try
             {
                 var dataContext = ((sender as Button)?.DataContext as string).Split(' ');
-                string path = Setting.DictionaryCommands[dataContext.First()];
+                string path = App.Setting.DictionaryCommands[dataContext.First()];
                 SoundPlayer player = new SoundPlayer(path);
                 player.Play();
                 var res = StackPanelLogging.FindName(dataContext.Last());
@@ -446,7 +423,7 @@ namespace SonosTwitch
         {
 
             if (sender is CheckBox)
-                Setting.ReceiveEveryone = (sender as CheckBox).IsChecked.Value;
+                App.Setting.ReceiveEveryone = (sender as CheckBox).IsChecked.Value;
             else
                 MessageBox.Show("Объект не является переключателем");
         }
@@ -454,7 +431,7 @@ namespace SonosTwitch
         private void CheckBoxSubscriber_OnClick(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox)
-                Setting.ReceiveSubscriber = (sender as CheckBox).IsChecked.Value;
+                App.Setting.ReceiveSubscriber = (sender as CheckBox).IsChecked.Value;
             else
                 MessageBox.Show("Объект не является переключателем");
         }
@@ -462,7 +439,7 @@ namespace SonosTwitch
         private void CheckBoxFollower_OnClick(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox)
-                Setting.ReceiveFollower = (sender as CheckBox).IsChecked.Value;
+                App.Setting.ReceiveFollower = (sender as CheckBox).IsChecked.Value;
             else
                 MessageBox.Show("Объект не является переключателем");
         }
@@ -470,79 +447,45 @@ namespace SonosTwitch
         private void CheckBoxGetOffer_OnClick(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox)
-                Setting.IsGetOffer = (sender as CheckBox).IsChecked.Value;
+                App.Setting.IsGetOffer = (sender as CheckBox).IsChecked.Value;
             else
                 MessageBox.Show("Объект не является переключателем");
         }
 
         private void ButtonDeleteCommand_OnClick(object sender, RoutedEventArgs e)
         {
-            var children = GridCommands.Children.OfType<UIElement>().ToList();
-            var source = sender as Button;
-            string command = "";
-            int row = Grid.GetRow(source);
-            try
+            Sounds.Remove(Sounds.First(x => x.Command == ((Button) sender).DataContext));
+        }
+
+        private void ButtonEditTwitchChannel_OnClick(object sender, RoutedEventArgs e)
+        {
+            AuthorizeTwitch page = new AuthorizeTwitch();
+            page.Owner = this;
+            page.Show();
+        }
+
+        private void TextBoxTimeout_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (!(e.Key >= Key.D0 && e.Key <= Key.D9 || e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9 ||
+                 e.Key == Key.Back || e.Key == Key.Delete))
             {
-                if (row >= 0)
-                {
-                    foreach (var element in children)
-                    {
-                        if (element is TextBox)
-                        {
-                            if (Grid.GetRow(element as TextBox) == row)
-                            {
-                                if ((element as TextBox).DataContext.ToString() == "TextCommand")
-                                {
-                                    command = (element as TextBox).Text;
-                                    Setting.DictionaryCommands.Remove(command);
-                                }
-
-                                GridCommands.Children.Remove(element);
-                            }
-                        }
-
-                        if (element is Button)
-                        {
-                            if (Grid.GetRow(element as Button) == row)
-                            {
-                                GridCommands.Children.Remove(element);
-                            }
-                        }
-                    }
-
-                    //GridCommands.RowDefinitions.Remove(GridCommands.RowDefinitions[row]);
-                }
+                e.Handled = true;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + " " + row);
-                
-            }
-            
-                
-            
-            
-            
-            /*var children = GridCommands.Children.OfType<UIElement>().ToList();
-            foreach (var element in children)
-            {
-                if (element is TextBox)
-                {
-                    if ((element as TextBox).Visibility == Visibility.Visible)
-                        GridCommands.Children.Remove(element as TextBox);
-                }
+        }
 
-                if (element is Button)
-                {
-                    if ((element as Button).Visibility == Visibility.Visible)
-                        GridCommands.Children.Remove(element as Button);
-                }
-            }
-            while (GridCommands.RowDefinitions.Count > 1)
+        private void SyncCommands()
+        {
+            Sounds = Sounds ?? new ObservableCollection<Sound>();
+            foreach (var pair in App.Setting.DictionaryCommands)
             {
-                GridCommands.RowDefinitions[row];
-                AddNewCommandLine();
-            }*/
+                Sounds.Add(new Sound(pair.Key, pair.Value));
+            }
+        }
+
+        private void TextBox_Command_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            //MessageBox.Show();
+            
         }
     }
 }

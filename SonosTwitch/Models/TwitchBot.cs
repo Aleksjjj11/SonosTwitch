@@ -1,5 +1,7 @@
-using System;
+﻿using System;
 using System.Windows;
+using TwitchLib.Api;
+using TwitchLib.Api.Core;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
@@ -14,26 +16,34 @@ namespace SonosTwitch
     {
         public TwitchClient Client { get; }
 	
-        public TwitchBot()
+        public TwitchBot(string login, string token)
         {
-            ConnectionCredentials credentials = new ConnectionCredentials("aleksjjj11", "oauth:pjmun7hp2vw579xvdlbumvoyiuxdtt");
-	        var clientOptions = new ClientOptions
+            try
+            {
+                ConnectionCredentials credentials =
+                    new ConnectionCredentials(login, $"oauth:{token}");
+                var clientOptions = new ClientOptions
                 {
                     MessagesAllowedInPeriod = 750,
                     ThrottlingPeriod = TimeSpan.FromSeconds(10)
                 };
-            WebSocketClient customClient = new WebSocketClient(clientOptions);
-            Client = new TwitchClient(customClient);
-            //Here may write any channel
-            Client.Initialize(credentials, "rango4u");
-            Client.OnLog += Client_OnLog;
-            Client.OnJoinedChannel += Client_OnJoinedChannel;
-            Client.OnMessageReceived += Client_OnMessageReceived;
-            Client.OnWhisperReceived += Client_OnWhisperReceived;
-            //client.OnNewSubscriber += Client_OnNewSubscriber;
-            Client.OnConnected += Client_OnConnected;
-
-            Client.Connect();
+                WebSocketClient customClient = new WebSocketClient(clientOptions);
+                Client = new TwitchClient(customClient);
+                //Here may write any channel
+                Client.Initialize(credentials, login);
+                Client.OnLog += Client_OnLog;
+                Client.OnJoinedChannel += Client_OnJoinedChannel;
+                Client.OnMessageReceived += Client_OnMessageReceived;
+                Client.OnWhisperReceived += Client_OnWhisperReceived;
+                //client.OnNewSubscriber += Client_OnNewSubscriber;
+                Client.OnConnected += Client_OnConnected;
+                
+                Client.Connect();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
   
         private void Client_OnLog(object sender, OnLogArgs e)
@@ -57,14 +67,14 @@ namespace SonosTwitch
         public event CommandReceived Notify;
         private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            if (e.ChatMessage.Message[0].ToString() == MainWindow.Setting.Prefix)
+            if (e.ChatMessage.Message[0].ToString() == App.Setting.Prefix)
             {
                 string res =
-                    MainWindow.Setting.DictionaryCommands[$"{e.ChatMessage.Message.Replace(MainWindow.Setting.Prefix, "")}"];
+                    App.Setting.DictionaryCommands[$"{e.ChatMessage.Message.Replace(App.Setting.Prefix, "")}"];
                 if (res != null)
                 {
-                    if (Notify != null && (MainWindow.Setting.ReceiveEveryone || MainWindow.Setting.ReceiveFollower ||
-                                           MainWindow.Setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber) ) Notify(sender, e);
+                    if (Notify != null && (App.Setting.ReceiveEveryone || App.Setting.ReceiveFollower ||
+                                           App.Setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber) ) Notify(sender, e);
                 } 
             }
         }

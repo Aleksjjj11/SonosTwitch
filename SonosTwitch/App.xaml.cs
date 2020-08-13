@@ -7,5 +7,6 @@ namespace SonosTwitch
     /// </summary>
     public partial class App
     {
+        public static AppSetting Setting;
     }
 }

@@ -14,6 +14,9 @@ namespace SonosTwitch
         public bool ReceiveSubscriber { get; set; }
         public bool ReceiveEveryone { get; set; }
         public bool IsGetOffer { get; set; }
+        public string TwitchToken { get; set; }
+        public uint Timeout { get; set; }
+        public string CurrentVersion { get; set; }
         public Dictionary<string, string> DictionaryCommands
         {
             get { return _dictionary; }

@@ -103,12 +103,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid>
-                            <Rectangle Fill="#48B653" Opacity="0.05" RadiusX="1" RadiusY="1"></Rectangle>
+                            <Rectangle Fill="#48B653" Opacity="0.2" RadiusX="1" RadiusY="1"></Rectangle>
                             <Label Content="{TemplateBinding Content}"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
                                    Foreground="#48B653" FontSize="14"
-                                   FontFamily="Arial"></Label>
+                                   FontFamily="#Arial"></Label>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -119,12 +119,12 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
                                 <Grid>
-                                    <Rectangle Fill="#48B653" Opacity="0.3" RadiusX="3" RadiusY="3"></Rectangle>
+                                    <Rectangle Fill="#48B653" Opacity="0.6" RadiusX="3" RadiusY="3"></Rectangle>
                                     <Label Content="{TemplateBinding Content}"
                                            HorizontalContentAlignment="Center"
                                            VerticalContentAlignment="Center"
                                            Foreground="#48B653" FontSize="14"
-                                           FontFamily="Arial"></Label>
+                                           FontFamily="#Arial"></Label>
                                 </Grid>
                             </ControlTemplate>
                         </Setter.Value>
@@ -137,12 +137,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid>
-                            <Rectangle Fill="#7289DA" Opacity="0.05" RadiusX="1" RadiusY="1"></Rectangle>
+                            <Rectangle Fill="#7289DA" Opacity="0.2" RadiusX="1" RadiusY="1"></Rectangle>
                             <Label Content="{TemplateBinding Content}"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
                                    Foreground="#7289DA" FontSize="14"
-                                   FontFamily="Arial"></Label>
+                                   FontFamily="#Arial"></Label>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -153,12 +153,12 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
                                 <Grid>
-                                    <Rectangle Fill="#7289DA" Opacity="0.3" RadiusX="3" RadiusY="3"></Rectangle>
+                                    <Rectangle Fill="#7289DA" Opacity="0.6" RadiusX="3" RadiusY="3"></Rectangle>
                                     <Label Content="{TemplateBinding Content}"
                                            HorizontalContentAlignment="Center"
                                            VerticalContentAlignment="Center"
                                            Foreground="#7289DA" FontSize="14"
-                                           FontFamily="Arial"></Label>
+                                           FontFamily="#Arial"></Label>
                                 </Grid>
                             </ControlTemplate>
                         </Setter.Value>
@@ -171,12 +171,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid>
-                            <Rectangle Fill="#CF3E3E" Opacity="0.05" RadiusX="1" RadiusY="1" Stroke="#CF3E3E" StrokeThickness="1"></Rectangle>
+                            <Rectangle Fill="#CF3E3E" Opacity="0.2" RadiusX="1" RadiusY="1" Stroke="#CF3E3E" StrokeThickness="1"></Rectangle>
                             <Label Content="{TemplateBinding Content}"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
                                    Foreground="#CF3E3E" FontSize="14"
-                                   FontFamily="Arial"
+                                   FontFamily="#Arial"
                                    ></Label>
                         </Grid>
                     </ControlTemplate>
@@ -188,12 +188,12 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
                                 <Grid>
-                                    <Rectangle Fill="#CF3E3E" RadiusX="2" RadiusY="2" Opacity="0.3">
+                                    <Rectangle Fill="#CF3E3E" RadiusX="2" RadiusY="2" Opacity="0.6">
                                     </Rectangle>
                                     <Label Content="{TemplateBinding Content}"
                                            HorizontalContentAlignment="Center"
                                            VerticalContentAlignment="Center"
-                                           Foreground="#CF3E3E" FontSize="14" FontFamily="Arial"
+                                           Foreground="#CF3E3E" FontSize="14" FontFamily="#Arial"
                                            ></Label>
                                 </Grid>
                             </ControlTemplate>
@@ -231,5 +231,37 @@
                 </Setter>
             </Trigger>
         </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" x:Key="StyleButtonGear">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Rectangle>
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="../Icons/gear.png"></ImageBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Rectangle>
+                                <Rectangle.Fill>
+                                    <ImageBrush ImageSource="../Icons/gear.png" Opacity="0.3"></ImageBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="TextBlock" x:Key="TextBlockAuthorize">
+        <Setter Property="Foreground" Value="Gray"></Setter>
+        <Setter Property="FontFamily" Value="#Arial"></Setter>
     </Style>
 </ResourceDictionary>

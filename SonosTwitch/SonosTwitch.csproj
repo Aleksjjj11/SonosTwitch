@@ -25,6 +25,7 @@
         <DefineConstants>DEBUG;TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
+        <Prefer32bit>false</Prefer32bit>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,6 +35,7 @@
         <DefineConstants>TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
+        <Prefer32bit>false</Prefer32bit>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="AxInterop.WMPLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -157,27 +159,30 @@
             <SubType>Designer</SubType>
         </ApplicationDefinition>
         <Compile Include="AppSetting.cs" />
-        <Compile Include="AuthorizeTwitch.xaml.cs">
+        <Compile Include="Models\Sound.cs" />
+        <Compile Include="ViewModels\AuthorizeTwitchVM.cs" />
+        <Compile Include="ViewModels\MainWindowVM.cs" />
+        <Compile Include="Views\AuthorizeTwitch.xaml.cs">
           <DependentUpon>AuthorizeTwitch.xaml</DependentUpon>
         </Compile>
-        <Compile Include="TwitchBot.cs" />
-        <Page Include="AuthorizeTwitch.xaml" />
+        <Compile Include="Views\MainWindow.xaml.cs">
+          <DependentUpon>MainWindow.xaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
         <Page Include="icons.xaml" />
-        <Page Include="MainWindow.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-        </Page>
         <Compile Include="App.xaml.cs">
             <DependentUpon>App.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Include="MainWindow.xaml.cs">
-            <DependentUpon>MainWindow.xaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Page Include="Styles.xaml" />
+        <Page Include="Views\AuthorizeTwitch.xaml" />
+        <Page Include="Views\MainWindow.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Models\TwitchBot.cs" />
         <Compile Include="Properties\AssemblyInfo.cs">
             <SubType>Code</SubType>
         </Compile>
@@ -196,9 +201,16 @@
         <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <Content Include="Icons\advertising-system.ico" />
+      <Resource Include="Icons\advertising-system.ico" />
+      <Resource Include="Fonts\uni_sans_heavy_italic.otf" />
+      <Resource Include="Fonts\Uni Sans Heavy.otf" />
+      <Resource Include="Fonts\Uni Sans Thin Italic.otf" />
+      <Resource Include="Fonts\Uni Sans Thin.otf" />
+      <Content Include="Fonts\Comfortaa-Bold.ttf" />
+      <Content Include="Fonts\Comfortaa-Light.ttf" />
+      <Resource Include="Fonts\comfortaa_regular.ttf" />
       <Content Include="Icons\advertising-system.png" />
-      <Content Include="Icons\gear.png" />
+      <Resource Include="Icons\gear.png" />
       <Content Include="Icons\next (1).png" />
       <Content Include="Icons\next.png" />
       <Content Include="Icons\next.svg" />
