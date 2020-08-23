@@ -33,19 +33,19 @@
                 <TextBlock Text="Login" Margin="20 15 0 0" Style="{StaticResource TextBlockAuthorize}"></TextBlock>
                 <StackPanel Orientation="Horizontal">
                     <TextBox Name="TextBoxLogin"  Height="25" Margin="20 5 0 0" Style="{StaticResource TextBoxLogin}"
-                             Width="200" HorizontalAlignment="Center"
+                             Width="200" HorizontalAlignment="Center" Text="{Binding Path=Login, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              TextChanged="TextChanged">
                     </TextBox>
                 </StackPanel>
                 <TextBlock Text="" Margin="20 15 0 0">
                     <Hyperlink NavigateUri="https://twitchtokengenerator.com/" Click="Hyperlink_OnClick" Foreground="Gray"
                                TextDecorations="None" FontFamily="#Arial">
-                        Token?!
+                        Token?! (you can click here)
                     </Hyperlink>
                 </TextBlock>
                 <StackPanel Orientation="Horizontal">
                     <TextBox Name="TextBoxToken"  Height="25" Margin="20 5 0 0" Style="{StaticResource TextBoxLogin}"
-                             Width="200" HorizontalAlignment="Center"
+                             Width="200" HorizontalAlignment="Center" Text="{Binding Path=Token, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              TextChanged="TextChanged">
                     </TextBox>
                 </StackPanel>
