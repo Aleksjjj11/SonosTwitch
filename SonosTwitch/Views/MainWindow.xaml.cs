@@ -29,6 +29,7 @@ namespace SonosTwitch
         public MainWindowVM ViewModel { get; set; }
         public ObservableCollection<Sound> Sounds { get; set; }
         private delegate Task OnPlaySong(string nameCommand);
+        private System.Windows.Forms.NotifyIcon notifyIcon = null;
         public MainWindow()
         {
             bool needUpdateListCommand = !LoadSaving();
@@ -53,6 +54,16 @@ namespace SonosTwitch
             _timerColor.Tag = false;
             _timerColor.IsEnabled = true;
             _timerColor.Start();
+        }
+
+        private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            this.Show();
+        }
+
+        private void notifyIcon_Click(object sender, EventArgs e)
+        {
+            
         }
 
         private void Coloring(object sender, EventArgs eventArgs)
@@ -259,20 +270,41 @@ namespace SonosTwitch
             }
         }
 
-        private void TextBox_Command_OnLostFocus(object sender, RoutedEventArgs e)
-        {
-            //MessageBox.Show();
-            
-        }
-
         private void Button_CloseApp(object sender, RoutedEventArgs e)
         {
-            Close();
+            this.Hide();
+            notifyIcon.Visible = true;
         }
 
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
+        }
+        private void MainWindows_Initialized(object sender, EventArgs e)
+        {
+            System.Windows.Forms.ContextMenuStrip contextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+            System.Windows.Forms.ToolStripMenuItem showItem = new System.Windows.Forms.ToolStripMenuItem("Show");
+            showItem.Click += ShowItem_Click;
+            System.Windows.Forms.ToolStripMenuItem exitItem = new System.Windows.Forms.ToolStripMenuItem("Exit");
+            exitItem.Click += ExitItem_Click;
+            contextMenuStrip.Items.Add(showItem);
+            contextMenuStrip.Items.Add(exitItem);
+            notifyIcon = new System.Windows.Forms.NotifyIcon();
+            notifyIcon.Click += new EventHandler(notifyIcon_Click);
+            notifyIcon.DoubleClick += new EventHandler(notifyIcon_DoubleClick);
+            notifyIcon.Text = "SoNoS";
+            notifyIcon.ContextMenuStrip = contextMenuStrip;
+            notifyIcon.Icon = new System.Drawing.Icon("C:/Users/TaskeDes/YandexDisk/C#/SonosTwitch/SonosTwitch/Icons/presentation.ico");
+        }
+
+        private void ExitItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void ShowItem_Click(object sender, EventArgs e)
+        {
+            this.Show();
         }
     }
 }

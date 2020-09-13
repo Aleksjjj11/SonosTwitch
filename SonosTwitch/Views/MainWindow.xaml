@@ -10,6 +10,8 @@
         ResizeMode="NoResize"
         Title="Sonos" Height="550" Width="900"
         Closing="MainWindow_OnClosed"
+        Loaded="MainWindows_Loaded"
+        Initialized="MainWindows_Initialized"
         DataContext="{Binding ElementName=MainWindows}"
         WindowStartupLocation="CenterScreen">
     <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown">
@@ -24,7 +26,7 @@
         </Grid.RowDefinitions>
         <DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"
             Background="#36363D" LastChildFill="False">
-            <Button Height="25" Width="25" Background="Transparent"
+            <Button Height="25" Width="25" Background="Transparent" Padding="5"
                     DockPanel.Dock="Right" BorderThickness="0" Click="Button_CloseApp">
                 <Image Source="/Icons/multiply.png" />
             </Button>
