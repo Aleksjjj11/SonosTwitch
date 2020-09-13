@@ -10,7 +10,6 @@
         ResizeMode="NoResize"
         Title="Sonos" Height="550" Width="900"
         Closing="MainWindow_OnClosed"
-        Loaded="MainWindows_Loaded"
         Initialized="MainWindows_Initialized"
         DataContext="{Binding ElementName=MainWindows}"
         WindowStartupLocation="CenterScreen">
@@ -165,7 +164,7 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBox Name="TextBox_Command" Grid.Row="0" Grid.Column="0" Style="{StaticResource WindowTextBox}" 
                                                  Text="{Binding Path=Command, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="50 10 0 0"
-                                                 Width="165" Height="30" LostFocus="TextBox_Command_OnLostFocus"></TextBox>
+                                                 Width="165" Height="30"></TextBox>
                                         <Button DataContext="{Binding Path=PathSound}" Grid.Row="0" Grid.Column="0" Style="{StaticResource ButtonRed}" 
                                                 Content="X" Height="30" Width="30"
                                                 Margin="142 10 0 0" Click="ButtonDeleteCommand_OnClick"></Button>
