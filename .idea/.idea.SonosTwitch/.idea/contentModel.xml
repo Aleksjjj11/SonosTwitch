@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\TaskeDes\AppData\local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\TaskeDes\AppData\local\JetBrains\Rider2020.1\resharper-host\local\Transient\ReSharperHost\v201\SolutionCaches\_SonosTwitch.2117528299.00" t="ExcludeRecursive" />
+    <e p="C:\Users\TaskeDes\YandexDisk\C#\SonosTwitch" t="IncludeFlat">
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="SonosTwitch" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="App.xaml" t="Include" />
+        <e p="App.xaml.cs" t="Include" />
+        <e p="AppSetting.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Fonts" t="Include">
+          <e p="Comfortaa-Bold.ttf" t="Include" />
+          <e p="Comfortaa-Light.ttf" t="Include" />
+          <e p="comfortaa_regular.ttf" t="Include" />
+          <e p="Uni Sans Heavy.otf" t="Include" />
+          <e p="Uni Sans Thin Italic.otf" t="Include" />
+          <e p="Uni Sans Thin.otf" t="Include" />
+          <e p="uni_sans_heavy_italic.otf" t="Include" />
+        </e>
+        <e p="Icons" t="Include">
+          <e p="advertising-system.ico" t="Include" />
+          <e p="advertising-system.png" t="Include" />
+          <e p="gear.png" t="Include" />
+          <e p="next (1).png" t="Include" />
+          <e p="next.png" t="Include" />
+          <e p="next.svg" t="Include" />
+        </e>
+        <e p="icons.xaml" t="Include" />
+        <e p="Models" t="Include">
+          <e p="Offer.cs" t="Include" />
+          <e p="Sound.cs" t="Include" />
+          <e p="TwitchBot.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="App.g.cs" t="Include" />
+            <e p="SonosTwitch_Content.g.cs" t="Include" />
+            <e p="Views" t="Include">
+              <e p="AuthorizeTwitch.g.cs" t="Include" />
+              <e p="MainWindow.g.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="packages.config" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+        <e p="SonosTwitch.csproj" t="IncludeRecursive" />
+        <e p="Styles.xaml" t="Include" />
+        <e p="ViewModels" t="Include">
+          <e p="AuthorizeTwitchVM.cs" t="Include" />
+          <e p="MainWindowVM.cs" t="Include" />
+        </e>
+        <e p="Views" t="Include">
+          <e p="AuthorizeTwitch.xaml" t="Include" />
+          <e p="AuthorizeTwitch.xaml.cs" t="Include" />
+          <e p="MainWindow.xaml" t="Include" />
+          <e p="MainWindow.xaml.cs" t="Include" />
+        </e>
+      </e>
+      <e p="SonosTwitch.sln" t="IncludeFlat" />
+    </e>
+  </component>
+</project>

@@ -1,4 +1,6 @@
-﻿namespace SonosTwitch.ViewModels
+﻿using System.Windows;
+
+namespace SonosTwitch.ViewModels
 {
     public class AuthorizeTwitchVM
     {
@@ -9,6 +11,12 @@
         {
             Login = App.Setting.TwitchChannel;
             Token = App.Setting.TwitchToken;
+        }
+        public void CommandClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("You clicked me");
+            /*Close();
+            Owner.Show();*/
         }
     }
 }

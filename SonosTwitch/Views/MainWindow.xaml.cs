@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -39,6 +40,7 @@ namespace SonosTwitch
             }
             catch (Exception ex)
             {
+                Debug.Print(ex.Message);
                 LabelTwitchChannel.Foreground = new SolidColorBrush(Colors.Red);
             }
             InitializeComponent();
@@ -229,7 +231,7 @@ namespace SonosTwitch
 
         private void ButtonDeleteCommand_OnClick(object sender, RoutedEventArgs e)
         {
-            Sounds.Remove(Sounds.First(x => x.Command == ((Button) sender).DataContext));
+            Sounds.Remove(Sounds.First(x => x.Command == (string) ((Button) sender).DataContext));
         }
 
         private void ButtonEditTwitchChannel_OnClick(object sender, RoutedEventArgs e)
@@ -261,6 +263,16 @@ namespace SonosTwitch
         {
             //MessageBox.Show();
             
+        }
+
+        private void Button_CloseApp(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
         }
     }
 }

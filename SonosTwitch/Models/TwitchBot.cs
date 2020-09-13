@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using TwitchLib.Api;
 using TwitchLib.Api.Core;
@@ -83,7 +84,7 @@ namespace SonosTwitch
             }
             catch (Exception ex)
             {
-                
+                Debug.Print(ex.Message);
             }
 
         }
