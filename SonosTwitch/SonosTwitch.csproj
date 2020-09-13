@@ -89,6 +89,7 @@
       <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Speech" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xaml">
@@ -160,6 +161,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppSetting.cs" />
+    <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Offer.cs" />
     <Compile Include="Models\Sound.cs" />
     <Compile Include="ViewModels\AuthorizeTwitchVM.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="Views\AuthorizeTwitch.xaml.cs">
       <DependentUpon>AuthorizeTwitch.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\BaseVM.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -203,6 +206,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="readme.md" />
     <Resource Include="Icons\presentation.ico" />
     <Resource Include="Icons\advertising-system.ico" />
     <Resource Include="Fonts\uni_sans_heavy_italic.otf" />

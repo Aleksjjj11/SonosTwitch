@@ -11,7 +11,7 @@
         Title="Sonos" Height="550" Width="900"
         Closing="MainWindow_OnClosed"
         Initialized="MainWindows_Initialized"
-        DataContext="{Binding ElementName=MainWindows}"
+        
         WindowStartupLocation="CenterScreen">
     <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown">
         <Grid.ColumnDefinitions>
@@ -40,7 +40,7 @@
                         <ControlTemplate  TargetType="Label">
                             <Grid>
                                 <Rectangle Fill="#4B4B56"></Rectangle>
-                                <Label Content="{Binding Path=ViewModel.AppSetting.TwitchChannel}" HorizontalAlignment="Left"
+                                <Label Content="{Binding Path=AppSetting.TwitchChannel}" HorizontalAlignment="Left"
                                        VerticalAlignment="Center" Foreground="Chartreuse" FontSize="16"
                                        Margin="7 4 7 6" FontFamily="#Arial" FontStretch="UltraExpanded"></Label>
                             </Grid>
@@ -75,7 +75,7 @@
                 </Label.Template>
                 Prefix
             </Label>
-            <TextBox Name="TextBoxPrefix" Margin="10 0 0 5" Text="{Binding Path=ViewModel.AppSetting.Prefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+            <TextBox Name="TextBoxPrefix" Margin="10 0 0 5" Text="{Binding Path=AppSetting.Prefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                      Height="20" Width="85" Style="{StaticResource WindowTextBox}">
             </TextBox>
             <Label Name="LabelGroups" Foreground="White"
@@ -93,15 +93,15 @@
                 GROUPS
             </Label>
             <CheckBox Name="CheckBoxEveryOne" Content="Everyone" Style="{StaticResource WindowCheckBox}"
-                      IsChecked="{Binding Path=ViewModel.AppSetting.ReceiveEveryone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      IsChecked="{Binding Path=AppSetting.ReceiveEveryone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       Margin="10 4 0 6" Click="CheckBoxEveryOne_OnClick">
             </CheckBox>
             <CheckBox Name="CheckBoxSubscriber" Content="Subscriber" Style="{StaticResource WindowCheckBox}"
-                      IsChecked="{Binding Path=ViewModel.AppSetting.ReceiveSubscriber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      IsChecked="{Binding Path=AppSetting.ReceiveSubscriber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       Margin="10 4 0 6" Click="CheckBoxSubscriber_OnClick">
             </CheckBox>
             <CheckBox Name="CheckBoxFollower" Content="Follower" Style="{StaticResource WindowCheckBox}"
-                      IsChecked="{Binding Path=ViewModel.AppSetting.ReceiveFollower, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      IsChecked="{Binding Path=AppSetting.ReceiveFollower, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       Margin="10 4 0 6" Click="CheckBoxFollower_OnClick">
                 <CheckBox.ToolTip>
                     <ToolTip Background="Indigo" Foreground="Azure" Content="В данный момент ни на что не влияет">
@@ -123,7 +123,7 @@
                 ADVANCED SETTINGS
             </Label>
             <CheckBox Name="CheckBoxGetOffer" Content="Get offer" Style="{StaticResource WindowCheckBox}"
-                      Margin="10 4 0 6" IsChecked="{Binding Path=ViewModel.AppSetting.IsGetOffer}" Click="CheckBoxGetOffer_OnClick">
+                      Margin="10 4 0 6" IsChecked="{Binding Path=AppSetting.IsGetOffer}" Click="CheckBoxGetOffer_OnClick">
             </CheckBox>
             <Label>
                 <Label.Template>
@@ -138,10 +138,17 @@
                 </Label.Template>
                 Timeout
             </Label>
-            <TextBox Name="TextBoxTimeout" Margin="10 0 0 5" Text="0" Height="20" Width="85" 
+            <TextBox Name="TextBoxTimeout" Margin="10 0 0 5" Text="{Binding AppSetting.Timeout}" Height="20" Width="85" 
                      KeyDown="TextBoxTimeout_OnKeyDown"
                      Style="{StaticResource WindowTextBox}">
             </TextBox>
+            <Label Content="Text to Speech" Margin="6 4 0 0"
+                   Foreground="#8A8AB0" FontSize="14"
+                   FontFamily="#Arial" HorizontalAlignment="Left"/>
+            <TextBox Name="TextBox_SpeechCommand" Margin="10 0 0 5" 
+                     Text="{Binding AppSetting.SpeechCommand}" 
+                     Height="20" Width="85" ToolTip="Command for text to speech"
+                     Style="{StaticResource WindowTextBox}"/>
             <Button Name="ButtonUploadIcon" Style="{StaticResource ButtonGreen}" Content="Upload" MaxHeight="30"
                     Margin="20 20 20 0" Click="ButtonUploadIcon_OnClick">
             </Button>
@@ -154,7 +161,7 @@
                         <RowDefinition Height="50"></RowDefinition>
                     </Grid.RowDefinitions>
                     <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl DataContext="{Binding ElementName=MainWindows}" Name="ItemsCommands" ItemsSource="{Binding Path=Sounds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ItemsControl Name="ItemsCommands" ItemsSource="{Binding Path=Sounds, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Name="GridCommands" VerticalAlignment="Bottom">
@@ -165,7 +172,7 @@
                                         <TextBox Name="TextBox_Command" Grid.Row="0" Grid.Column="0" Style="{StaticResource WindowTextBox}" 
                                                  Text="{Binding Path=Command, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="50 10 0 0"
                                                  Width="165" Height="30"></TextBox>
-                                        <Button DataContext="{Binding Path=PathSound}" Grid.Row="0" Grid.Column="0" Style="{StaticResource ButtonRed}" 
+                                        <Button DataContext="{Binding Path=Command}" Grid.Row="0" Grid.Column="0" Style="{StaticResource ButtonRed}" 
                                                 Content="X" Height="30" Width="30"
                                                 Margin="142 10 0 0" Click="ButtonDeleteCommand_OnClick"></Button>
                                         <TextBox Name="TextBox_Path" Grid.Row="0" Grid.Column="1" Style="{StaticResource WindowTextBox}" 
@@ -191,35 +198,32 @@
                 </Grid>
         </Grid>
         <ScrollViewer Grid.Column="2" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Hidden">
-            <ItemsControl Name="LogItems" Background="#4B4B56"
-                          ItemsSource="{Binding Path=ViewModel.QueueOffers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ItemsControl Background="#4B4B56"
+                          ItemsSource="{Binding Path=QueueOffers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid Name="OneLineLogging">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                                <Label Name="LabelTime0" Content="{Binding Path=Time}" Style="{StaticResource LabelTimeLogging}" Margin="5 15 0 0"></Label>
-                                <Label Name="LabelUserName0" Content="{Binding Path=Username}" Style="{StaticResource LabelTextLogging}"
-                                                   Foreground="#991BA4" Margin="0 10 0 0"></Label>
-                                <TextBlock Name="LabelReceivedCommand" Width="Auto" MaxWidth="100" Style="{StaticResource TextBlockTextLogging}"
-                                                       FontSize="14" Margin="0 15 5 0" TextWrapping="Wrap" Text="{Binding Path=Message}">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="{Binding Path=Time, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       Style="{StaticResource LabelTimeLogging}" Margin="5 15 0 0"/>
+                                <Label Content="{Binding Path=Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                       Style="{StaticResource LabelTextLogging}"
+                                       Foreground="#1BB1B4" Margin="0 10 0 0"/>
+                                <TextBlock MaxWidth="100" Style="{StaticResource TextBlockTextLogging}"
+                                           FontSize="14" Margin="0 15 5 0" TextWrapping="Wrap" 
+                                           Text="{Binding Path=Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 </TextBlock>
                             </StackPanel>
 
-                            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                                <Button Name="ButtonAccept" Style="{StaticResource ButtonGreen}" Content="Accept" Margin="35 10 10 0" Tag="{Binding Path=Id}"
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource ButtonGreen}" Content="Accept" Margin="35 10 10 0" 
+                                        Tag="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                     Click="AcceptOnClick"></Button>
-                                <Button Name="ButtonCancel" Style="{StaticResource ButtonRed}" Content="Cancel" Margin="10 10 35 0" Tag="{Binding Path=Id}"
+                                <Button Style="{StaticResource ButtonRed}" Content="Cancel" Margin="10 10 35 0" 
+                                        Tag="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                     Click="CancelOnClick"></Button>
                             </StackPanel>
-                        </Grid>
+                        </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

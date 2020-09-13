@@ -1,16 +1,34 @@
-﻿namespace SonosTwitch
+﻿namespace SonosTwitch.Models
 {
-    public class Sound
+    public class Sound : Item
     {
-        public string Command { get; set; }
-        public string PathSound { get; set; }
+        private string command;
+        public string Command
+        {
+            get => command;
+            set
+            {
+                command = value;
+                OnPropertyChanged("Command");
+            }
+        }
+        private string pathSound;
+        public string PathSound 
+        { 
+            get => pathSound; 
+            set
+            {
+                pathSound = value;
+                OnPropertyChanged("PathSound");
+            }
+        }
 
         public Sound() { }
 
-        public Sound(string command, string pathSound)
+        public Sound(string vCommand, string vPathSound)
         {
-            Command = command;
-            PathSound = pathSound;
+            command = vCommand;
+            pathSound = vPathSound;
         }
         
     }

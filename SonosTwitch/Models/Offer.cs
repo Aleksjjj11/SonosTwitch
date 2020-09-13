@@ -1,13 +1,49 @@
 ﻿using System;
 
-namespace SonosTwitch
+namespace SonosTwitch.Models
 {
-    public class Offer
+    public class Offer : Item
     {
-        public string Message { get; set; }
-        public DateTime Time { get; set; }
-        public string Username { get; set; }
-        public string Id { get; set; }
+        private string message;
+        public string Message
+        {
+            get => message;
+            set
+            {
+                message = value;
+                OnPropertyChanged("Message");
+            }
+        }
+        private DateTime time;
+        public DateTime Time
+        {
+            get => time;
+            set
+            {
+                time = value;
+                OnPropertyChanged("Time");
+            }
+        }
+        private string username;
+        public string Username
+        {
+            get => username;
+            set
+            {
+                username = value;
+                OnPropertyChanged("Username");
+            }
+        }
+        private string id;
+        public string Id
+        {
+            get => id;
+            set
+            {
+                id = value;
+                OnPropertyChanged("Id");
+            }
+        }
 
         public Offer(DateTime time, string message, string username)
         {

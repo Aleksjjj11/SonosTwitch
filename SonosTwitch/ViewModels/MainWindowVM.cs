@@ -1,18 +1,57 @@
-﻿using System.Collections.ObjectModel;
+﻿using SonosTwitch.Models;
+using System.Collections.ObjectModel;
 
 namespace SonosTwitch.ViewModels
 {
-    public class MainWindowVM
+    public class MainWindowVM : BaseVM
     {
-        public TwitchBot ClientBot { get; set; }
-        public AppSetting AppSetting { get; set; }
-        public ObservableCollection<Offer> QueueOffers { get; set; }
+        private TwitchBot clientBot;
+        public TwitchBot ClientBot
+        {
+            get => clientBot;
+            set
+            {
+                clientBot = value;
+                OnPropertyChanged("ClientBot");
+            }
+        }
+        private AppSetting appSetting;
+        public AppSetting AppSetting
+        {
+            get => appSetting;
+            set
+            {
+                appSetting = value;
+                OnPropertyChanged("AppSetting");
+            }
+        }
+        public ObservableCollection<Offer> queueOffers;
+        public ObservableCollection<Offer> QueueOffers
+        {
+            get => queueOffers;
+            set
+            {
+                queueOffers = value;
+                OnPropertyChanged("QueueOffers");
+            }
+        }
+        private ObservableCollection<Sound> sounds;
+        public ObservableCollection<Sound> Sounds
+        {
+            get => sounds; 
+            set
+            {
+                sounds = value;
+                OnPropertyChanged("Sounds");
+            } 
+        }
 
         public MainWindowVM(TwitchBot client, AppSetting setting)
         {
-            ClientBot = client;
-            AppSetting = setting;
-            QueueOffers = new ObservableCollection<Offer>();
+            clientBot = client;
+            appSetting = setting;
+            queueOffers = new ObservableCollection<Offer>();
+            sounds = new ObservableCollection<Sound>();
         }
     }
 }

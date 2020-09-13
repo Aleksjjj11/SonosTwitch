@@ -11,7 +11,7 @@ using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
 
-namespace SonosTwitch
+namespace SonosTwitch.Models
 {
     public class TwitchBot
     {
@@ -84,6 +84,10 @@ namespace SonosTwitch
             }
             catch (Exception ex)
             {
+                if (e.ChatMessage.Message.Contains(App.Setting.Prefix + App.Setting.SpeechCommand))
+                    if (Notify != null && (App.Setting.ReceiveEveryone || App.Setting.ReceiveFollower ||
+                        App.Setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber))
+                        Notify(sender, e);
                 Debug.Print(ex.Message);
             }
 

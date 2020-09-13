@@ -10,6 +10,7 @@ namespace SonosTwitch
         private Dictionary<string, string> _dictionary;
         public string TwitchChannel { get; set; }
         public string Prefix { get; set; }
+        public string SpeechCommand { get; set; }
         public bool ReceiveFollower { get; set; }
         public bool ReceiveSubscriber { get; set; }
         public bool ReceiveEveryone { get; set; }

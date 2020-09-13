@@ -23,10 +23,13 @@
         <e p="Icons" t="Include">
           <e p="advertising-system.ico" t="Include" />
           <e p="advertising-system.png" t="Include" />
+          <e p="cross.svg" t="Include" />
           <e p="gear.png" t="Include" />
+          <e p="multiply.png" t="Include" />
           <e p="next (1).png" t="Include" />
           <e p="next.png" t="Include" />
           <e p="next.svg" t="Include" />
+          <e p="presentation.ico" t="Include" />
         </e>
         <e p="icons.xaml" t="Include" />
         <e p="Models" t="Include">
@@ -50,6 +53,7 @@
           <e p="Resources.Designer.cs" t="Include" />
           <e p="Resources.resx" t="Include" />
         </e>
+        <e p="readme.md" t="Include" />
         <e p="SonosTwitch.csproj" t="IncludeRecursive" />
         <e p="Styles.xaml" t="Include" />
         <e p="ViewModels" t="Include">

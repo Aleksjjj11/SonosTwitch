@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Speech.Synthesis;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,7 +15,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using SonosTwitch.Models;
 using SonosTwitch.ViewModels;
+using TwitchLib.Api.Core.Models.Undocumented.Comments;
 using TwitchLib.Client.Events;
 
 namespace SonosTwitch
@@ -27,16 +31,15 @@ namespace SonosTwitch
         const string FileName = @"SavedSetting.bin";
         private DispatcherTimer _timerColor;
         public MainWindowVM ViewModel { get; set; }
-        public ObservableCollection<Sound> Sounds { get; set; }
         private delegate Task OnPlaySong(string nameCommand);
         private System.Windows.Forms.NotifyIcon notifyIcon = null;
         public MainWindow()
         {
             bool needUpdateListCommand = !LoadSaving();
+            DataContext = ViewModel = new MainWindowVM(new TwitchBot(App.Setting.TwitchChannel, App.Setting.TwitchToken), App.Setting);
             SyncCommands();
             try
             {
-                ViewModel = new MainWindowVM(new TwitchBot(App.Setting.TwitchChannel, App.Setting.TwitchToken), App.Setting);
                 ViewModel.ClientBot.Notify += TwitchBotOnNotify;
             }
             catch (Exception ex)
@@ -61,11 +64,6 @@ namespace SonosTwitch
             this.Show();
         }
 
-        private void notifyIcon_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void Coloring(object sender, EventArgs eventArgs)
         {
             bool? incremente = _timerColor.Tag as bool?;
@@ -82,23 +80,33 @@ namespace SonosTwitch
 
         private void TwitchBotOnNotify(object sender, OnMessageReceivedArgs e)
         {
+            if (e.ChatMessage.Message.Contains(ViewModel.AppSetting.Prefix + ViewModel.AppSetting.SpeechCommand))
+            {
+                SpeechSynthesizer speech = new SpeechSynthesizer();
+                speech.Speak(e.ChatMessage.Message.Remove(0, ViewModel.AppSetting.SpeechCommand.Length + 1));
+                return;
+            }
+
+            if (ViewModel.AppSetting.IsGetOffer)
+            {
+                //MessageBox.Show($"{e.ChatMessage.Message} + {e.ChatMessage.Username}");
+                ViewModel.QueueOffers.Add(new Offer(DateTime.Now, e.ChatMessage.Message, e.ChatMessage.Username));
+                return;
+            }
             Dispatcher?.BeginInvoke(DispatcherPriority.Normal, new OnPlaySong(PlaySong), e.ChatMessage.Message.Remove(0, 1));
         }
 
         private Task PlaySong(string nameCommand)
         {
-            if (CheckBoxGetOffer.IsChecked == false)
+            try
             {
-                try
-                {
-                    string path = App.Setting.DictionaryCommands[nameCommand];
-                    SoundPlayer player = new SoundPlayer(path);
-                    player.Play();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                string path = App.Setting.DictionaryCommands[nameCommand];
+                SoundPlayer player = new SoundPlayer(path);
+                player.Play();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             return Task.CompletedTask;
         }
@@ -110,7 +118,7 @@ namespace SonosTwitch
         /// <param name="e"></param>
         private void ButtonAddCommand_OnClick(object sender, RoutedEventArgs e)
         {
-            Sounds.Add(new Sound($"NewCommand{Sounds.Count}", "Opa"));
+            ViewModel.Sounds.Add(new Sound($"NewCommand{ViewModel.Sounds.Count}", "Opa"));
             //AddNewCommandLine();
         }
 
@@ -164,7 +172,7 @@ namespace SonosTwitch
         {
             App.Setting.DictionaryCommands = App.Setting.DictionaryCommands ?? new Dictionary<string, string>();
             App.Setting.DictionaryCommands.Clear();
-            foreach (var sound in Sounds)
+            foreach (var sound in ViewModel.Sounds)
             {
                 App.Setting.DictionaryCommands.Add(sound.Command, sound.PathSound);
             }
@@ -242,7 +250,13 @@ namespace SonosTwitch
 
         private void ButtonDeleteCommand_OnClick(object sender, RoutedEventArgs e)
         {
-            Sounds.Remove(Sounds.First(x => x.Command == (string) ((Button) sender).DataContext));
+            try
+            {
+                ViewModel.Sounds.Remove(ViewModel.Sounds.First(x => x.Command == (string) ((Button) sender).DataContext));
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ButtonEditTwitchChannel_OnClick(object sender, RoutedEventArgs e)
@@ -263,17 +277,17 @@ namespace SonosTwitch
 
         private void SyncCommands()
         {
-            Sounds = Sounds ?? new ObservableCollection<Sound>();
+            ViewModel.Sounds = ViewModel.Sounds ?? new ObservableCollection<Sound>();
             foreach (var pair in App.Setting.DictionaryCommands)
             {
-                Sounds.Add(new Sound(pair.Key, pair.Value));
+                ViewModel.Sounds.Add(new Sound(pair.Key, pair.Value));
             }
         }
 
         private void Button_CloseApp(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            notifyIcon.Visible = true;
+            //notifyIcon.Visible = true;
         }
 
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -290,11 +304,13 @@ namespace SonosTwitch
             contextMenuStrip.Items.Add(showItem);
             contextMenuStrip.Items.Add(exitItem);
             notifyIcon = new System.Windows.Forms.NotifyIcon();
-            notifyIcon.Click += new EventHandler(notifyIcon_Click);
             notifyIcon.DoubleClick += new EventHandler(notifyIcon_DoubleClick);
             notifyIcon.Text = "SoNoS";
             notifyIcon.ContextMenuStrip = contextMenuStrip;
-            notifyIcon.Icon = new System.Drawing.Icon("C:/Users/TaskeDes/YandexDisk/C#/SonosTwitch/SonosTwitch/Icons/presentation.ico");
+            //notifyIcon.Icon = new System.Drawing.Icon("C:/Users/TaskeDes/YandexDisk/C#/SonosTwitch/SonosTwitch/Icons/presentation.ico");
+            notifyIcon.Icon = SystemIcons.Application;
+            notifyIcon.Visible = true;
+
         }
 
         private void ExitItem_Click(object sender, EventArgs e)

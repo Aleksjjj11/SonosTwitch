@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using SonosTwitch.Models;
 using SonosTwitch.ViewModels;
 
 namespace SonosTwitch
