@@ -78,6 +78,7 @@ namespace SonosTwitch
             if (e.ChatMessage.Message.Contains(ViewModel.AppSetting.Prefix + ViewModel.AppSetting.SpeechCommand))
             {
                 SpeechSynthesizer speech = new SpeechSynthesizer();
+                speech.Volume = ViewModel.AppSetting.VolumeTextSpeech;
                 speech.Speak(e.ChatMessage.Message.Remove(0, ViewModel.AppSetting.SpeechCommand.Length + 1));
                 return;
             }

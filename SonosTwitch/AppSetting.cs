@@ -14,6 +14,16 @@ namespace SonosTwitch
         public string TwitchChannel { get; set; }
         public string Prefix { get; set; }
         public string SpeechCommand { get; set; }
+        private int _volumeTextSpeech;
+        public int VolumeTextSpeech 
+        { 
+            get => _volumeTextSpeech;
+            set 
+            {
+                _volumeTextSpeech = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VolumeTextSpeech)));
+            }
+        }
         public bool ReceiveFollower { get; set; }
         public bool ReceiveSubscriber { get; set; }
         public bool ReceiveEveryone { get; set; }
