@@ -22,6 +22,7 @@ using TwitchLib.Client.Events;
 
 namespace SonosTwitch
 {
+    //TODO https://github.com/aleksjjj11/SonosTwitch/releases/latest for UPDATE SYSTEM
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -33,20 +34,14 @@ namespace SonosTwitch
         public MainWindowVM ViewModel { get; set; }
         private delegate Task OnPlaySong(string nameCommand);
         private System.Windows.Forms.NotifyIcon notifyIcon = null;
+
         public MainWindow()
         {
             bool needUpdateListCommand = !LoadSaving();
             DataContext = ViewModel = new MainWindowVM(new TwitchBot(App.Setting.TwitchChannel, App.Setting.TwitchToken), App.Setting);
             SyncCommands();
-            try
-            {
-                ViewModel.ClientBot.Notify += TwitchBotOnNotify;
-            }
-            catch (Exception ex)
-            {
-                Debug.Print(ex.Message);
-                LabelTwitchChannel.Foreground = new SolidColorBrush(Colors.Red);
-            }
+            ViewModel.ClientBot.Notify += TwitchBotOnNotify;
+           
             InitializeComponent();
             Closing += MainWindow_OnClosed;
             _timerColor = new DispatcherTimer(DispatcherPriority.Background)
@@ -73,7 +68,7 @@ namespace SonosTwitch
                 incremente = false;
             if (incremente is true)
                 LabelTwitchChannel.Opacity += 0.01;
-            else 
+            else
                 LabelTwitchChannel.Opacity -= 0.01;
             _timerColor.Tag = incremente;
         }
@@ -89,7 +84,6 @@ namespace SonosTwitch
 
             if (ViewModel.AppSetting.IsGetOffer)
             {
-                //MessageBox.Show($"{e.ChatMessage.Message} + {e.ChatMessage.Username}");
                 ViewModel.QueueOffers.Add(new Offer(DateTime.Now, e.ChatMessage.Message, e.ChatMessage.Username));
                 return;
             }
@@ -100,8 +94,10 @@ namespace SonosTwitch
         {
             try
             {
-                string path = App.Setting.DictionaryCommands[nameCommand];
-                SoundPlayer player = new SoundPlayer(path);
+                string path = ViewModel.Sounds.First(x => x.Command == nameCommand).PathSound;
+                MediaPlayer player = new MediaPlayer();
+                player.Open(new Uri(path));
+                player.Volume = ViewModel.Sounds.First(x => x.PathSound == path).Volume;
                 player.Play();
             }
             catch (Exception ex)
@@ -119,12 +115,11 @@ namespace SonosTwitch
         private void ButtonAddCommand_OnClick(object sender, RoutedEventArgs e)
         {
             ViewModel.Sounds.Add(new Sound($"NewCommand{ViewModel.Sounds.Count}", "Opa"));
-            //AddNewCommandLine();
         }
 
         private void ButtonOpenAudioFile_OnClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog {DefaultExt = ".wav", Filter = "(.wav)|*.wav"};
+            OpenFileDialog dlg = new OpenFileDialog {DefaultExt = ".wav", Filter = "(.wav)|*.wav|(.mp3)|*.mp3"};
             var result = dlg.ShowDialog();
             if (result == true)
             {
@@ -147,16 +142,11 @@ namespace SonosTwitch
                 App.Setting.TimeLastLoaded = DateTime.Now;
                 openFileStream.Close();
                 
-                Console.WriteLine(@"Downloaded:");
-                foreach (var pair in App.Setting.DictionaryCommands)
-                {
-                    Console.WriteLine($"{pair.Key} : {pair.Value}");
-                }
-                
                 return true;
             }
             
-            App.Setting = new AppSetting(new Dictionary<string, string>());
+            //App.Setting = new AppSetting(new Dictionary<string, string>());
+            App.Setting = new AppSetting(new List<Sound>());
             return false;
         }
 
@@ -170,11 +160,11 @@ namespace SonosTwitch
 
         private void SaveChangeListCommands()
         {
-            App.Setting.DictionaryCommands = App.Setting.DictionaryCommands ?? new Dictionary<string, string>();
+            App.Setting.DictionaryCommands = App.Setting.DictionaryCommands ?? new List<Sound>();
             App.Setting.DictionaryCommands.Clear();
             foreach (var sound in ViewModel.Sounds)
             {
-                App.Setting.DictionaryCommands.Add(sound.Command, sound.PathSound);
+                App.Setting.DictionaryCommands.Add(sound);
             }
         }
 
@@ -203,9 +193,10 @@ namespace SonosTwitch
         {
             try
             {
-                string path = App.Setting.DictionaryCommands[
-                    ViewModel.QueueOffers.First(x => x.Id == ((Button) sender).Tag as string).Message.Replace(ViewModel.AppSetting.Prefix, "")];
-                SoundPlayer player = new SoundPlayer(path);
+                string path = ViewModel.Sounds.First(x => x.Command == ViewModel.QueueOffers.First(y => y.Id == ((Button)sender).Tag as string).Message.Replace(ViewModel.AppSetting.Prefix, "")).PathSound;
+                MediaElement player = new MediaElement();
+                player.Source = new Uri(path);
+                player.Volume = ViewModel.Sounds.First(x => x.PathSound == path).Volume;
                 player.Play();
                 ViewModel.QueueOffers.Remove(ViewModel.QueueOffers.First(x => x.Id == ((Button) sender).Tag as string));
             }
@@ -280,14 +271,13 @@ namespace SonosTwitch
             ViewModel.Sounds = ViewModel.Sounds ?? new ObservableCollection<Sound>();
             foreach (var pair in App.Setting.DictionaryCommands)
             {
-                ViewModel.Sounds.Add(new Sound(pair.Key, pair.Value));
+                ViewModel.Sounds.Add(pair);
             }
         }
 
         private void Button_CloseApp(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            //notifyIcon.Visible = true;
         }
 
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -1,5 +1,8 @@
-﻿namespace SonosTwitch.Models
+﻿using System;
+
+namespace SonosTwitch.Models
 {
+    [Serializable]
     public class Sound : Item
     {
         private string command;
@@ -23,12 +26,24 @@
             }
         }
 
+        private double volume;
+        public double Volume
+        {
+            get => volume;
+            set
+            {
+                volume = value;
+                OnPropertyChanged(nameof(Volume));
+            }
+        }
+
         public Sound() { }
 
         public Sound(string vCommand, string vPathSound)
         {
-            command = vCommand;
-            pathSound = vPathSound;
+            Command = vCommand;
+            PathSound = vPathSound;
+            Volume = 0.5;
         }
         
     }

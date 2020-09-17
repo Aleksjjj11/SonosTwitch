@@ -57,8 +57,6 @@
         <Style TargetType="TextBlock" x:Key="TextBlockTextLogging">
             <Setter Property="Foreground" Value="White"></Setter>
             <Setter Property="HorizontalAlignment" Value="Left"></Setter>
-            <!-- <Setter Property="HorizontalContentAlignment" Value="Left"></Setter> -->
-            <!-- <Setter Property="VerticalContentAlignment" Value="Bottom"></Setter> -->
             <Setter Property="FontSize" Value="16"></Setter>
             <!--NEEDED DEVELOPING -->
         </Style>
@@ -82,15 +80,8 @@
             <Setter Property="HorizontalContentAlignment" Value="Left"></Setter>
             <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
             <Setter Property="BorderBrush" Value="#2C2C31"></Setter>
-            <Setter Property="BorderThickness" Value="2"></Setter>
-            <!--<Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="CheckBox">
-                        
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>-->
-        </Style>
+        <Setter Property="BorderThickness" Value="2"></Setter>
+    </Style>
         <Style TargetType="Ellipse" x:Key="IconImage">
             <Setter Property="Margin" Value="0 10 0 0"></Setter>
             <Setter Property="HorizontalAlignment" Value="Center"></Setter>
@@ -98,7 +89,6 @@
             <Setter Property="Fill" Value="#585789"></Setter>
         </Style>
         <Style TargetType="Button" x:Key="ButtonGreen">
-            <!-- <Setter Property="Opacity" Value="0.5"></Setter> -->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -263,5 +253,20 @@
     <Style TargetType="TextBlock" x:Key="TextBlockAuthorize">
         <Setter Property="Foreground" Value="Gray"></Setter>
         <Setter Property="FontFamily" Value="#Arial"></Setter>
+    </Style>
+    <Style TargetType="Slider" x:Key="StyleSlider">
+    </Style>
+    <Style TargetType="RepeatButton" x:Key="StyleRepeatButtonFill">
+        <Setter Property="Background" Value="Gray"/>
+    </Style>
+    <Style TargetType="RepeatButton" x:Key="StyleRepeatButtonNoFill">
+        <Setter Property="Background" Value="Gray"/>
+    </Style>
+    <Style TargetType="Thumb" x:Key="StyleThumb">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+    </Style>
+    <Style TargetType="Track" x:Key="StyleTrack">
+        <Setter Property="Height" Value="20"/>
     </Style>
 </ResourceDictionary>

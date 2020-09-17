@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace SonosTwitch.Models
 {
+    [Serializable]
     public class Item : INotifyPropertyChanged
     {
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {

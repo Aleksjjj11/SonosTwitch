@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SonosTwitch.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace SonosTwitch
@@ -7,7 +9,8 @@ namespace SonosTwitch
     [Serializable]
     public class AppSetting : INotifyPropertyChanged
     {
-        private Dictionary<string, string> _dictionary;
+        //private Dictionary<string, string> _dictionary;
+        private List<Sound> _dictionary;
         public string TwitchChannel { get; set; }
         public string Prefix { get; set; }
         public string SpeechCommand { get; set; }
@@ -18,7 +21,7 @@ namespace SonosTwitch
         public string TwitchToken { get; set; }
         public uint Timeout { get; set; }
         public string CurrentVersion { get; set; }
-        public Dictionary<string, string> DictionaryCommands
+        public List<Sound> DictionaryCommands
         {
             get => _dictionary;
             set
@@ -33,7 +36,7 @@ namespace SonosTwitch
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         
-        public AppSetting(Dictionary<string,string> dictionary)
+        public AppSetting(List<Sound> dictionary)
         {
             _dictionary = dictionary;
         }

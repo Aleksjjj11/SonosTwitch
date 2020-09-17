@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using TwitchLib.Api;
 using TwitchLib.Api.Core;
@@ -72,8 +73,9 @@ namespace SonosTwitch.Models
             {
                 if (e.ChatMessage.Message[0].ToString() == App.Setting.Prefix)
                 {
-                    string res =
-                        App.Setting.DictionaryCommands[$"{e.ChatMessage.Message.Replace(App.Setting.Prefix, "")}"];
+                    //string res =
+                    //    App.Setting.DictionaryCommands[$"{e.ChatMessage.Message.Replace(App.Setting.Prefix, "")}"];
+                    string res = App.Setting.DictionaryCommands.First(x => x.Command == $"{e.ChatMessage.Message.Replace(App.Setting.Prefix, "")}").PathSound;
                     if (res != null)
                     {
                         if (Notify != null && (App.Setting.ReceiveEveryone || App.Setting.ReceiveFollower ||
