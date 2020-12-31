@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -17,9 +18,11 @@ namespace SonosTwitch.Models
     public class TwitchBot
     {
         public TwitchClient Client { get; }
+        private AppSetting _setting;
 	
-        public TwitchBot(string login, string token)
+        public TwitchBot(string login, string token, AppSetting setting)
         {
+            _setting = setting;
             try
             {
                 ConnectionCredentials credentials =
@@ -46,6 +49,11 @@ namespace SonosTwitch.Models
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        public void UpdateSetting(AppSetting setting)
+        {
+            _setting = setting;
         }
   
         private void Client_OnLog(object sender, OnLogArgs e)
@@ -75,20 +83,20 @@ namespace SonosTwitch.Models
                 {
                     //string res =
                     //    App.Setting.DictionaryCommands[$"{e.ChatMessage.Message.Replace(App.Setting.Prefix, "")}"];
-                    string res = App.Setting.DictionaryCommands.First(x => x.Command == $"{e.ChatMessage.Message.Replace(App.Setting.Prefix, "")}").PathSound;
+                    string res = _setting.DictionaryCommands.First(x => x.Command == $"{e.ChatMessage.Message.Replace(_setting.Prefix, "")}").PathSound;
                     if (res != null)
                     {
-                        if (Notify != null && (App.Setting.ReceiveEveryone || App.Setting.ReceiveFollower ||
-                                               App.Setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber))
+                        if (Notify != null && (_setting.ReceiveEveryone || _setting.ReceiveFollower ||
+                                               _setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber))
                             Notify(sender, e);
                     }
                 }
             }
             catch (Exception ex)
             {
-                if (e.ChatMessage.Message.Contains(App.Setting.Prefix + App.Setting.SpeechCommand))
-                    if (Notify != null && (App.Setting.ReceiveEveryone || App.Setting.ReceiveFollower ||
-                        App.Setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber))
+                if (e.ChatMessage.Message.Contains(_setting.Prefix + _setting.SpeechCommand))
+                    if (Notify != null && (_setting.ReceiveEveryone || _setting.ReceiveFollower ||
+                                           _setting.ReceiveSubscriber == e.ChatMessage.IsSubscriber))
                         Notify(sender, e);
                 Debug.Print(ex.Message);
             }

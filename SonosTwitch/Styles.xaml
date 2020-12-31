@@ -97,7 +97,7 @@
                             <Label Content="{TemplateBinding Content}"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
-                                   Foreground="#48B653" FontSize="14"
+                                   Foreground="#48B653"
                                    FontFamily="#Arial"></Label>
                         </Grid>
                     </ControlTemplate>
@@ -113,7 +113,7 @@
                                     <Label Content="{TemplateBinding Content}"
                                            HorizontalContentAlignment="Center"
                                            VerticalContentAlignment="Center"
-                                           Foreground="#48B653" FontSize="14"
+                                           Foreground="#48B653"
                                            FontFamily="#Arial"></Label>
                                 </Grid>
                             </ControlTemplate>
@@ -131,7 +131,7 @@
                             <Label Content="{TemplateBinding Content}"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
-                                   Foreground="#7289DA" FontSize="14"
+                                   Foreground="#7289DA"
                                    FontFamily="#Arial"></Label>
                         </Grid>
                     </ControlTemplate>
@@ -147,7 +147,7 @@
                                     <Label Content="{TemplateBinding Content}"
                                            HorizontalContentAlignment="Center"
                                            VerticalContentAlignment="Center"
-                                           Foreground="#7289DA" FontSize="14"
+                                           Foreground="#7289DA"
                                            FontFamily="#Arial"></Label>
                                 </Grid>
                             </ControlTemplate>
@@ -165,7 +165,7 @@
                             <Label Content="{TemplateBinding Content}"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
-                                   Foreground="#CF3E3E" FontSize="14"
+                                   Foreground="#CF3E3E"
                                    FontFamily="#Arial"
                                    ></Label>
                         </Grid>
@@ -183,7 +183,7 @@
                                     <Label Content="{TemplateBinding Content}"
                                            HorizontalContentAlignment="Center"
                                            VerticalContentAlignment="Center"
-                                           Foreground="#CF3E3E" FontSize="14" FontFamily="#Arial"
+                                           Foreground="#CF3E3E" FontFamily="#Arial"
                                            ></Label>
                                 </Grid>
                             </ControlTemplate>
