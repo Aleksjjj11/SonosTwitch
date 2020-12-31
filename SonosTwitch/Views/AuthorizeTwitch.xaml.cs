@@ -30,7 +30,7 @@ namespace SonosTwitch
             var token = TextBoxToken.Text;
             try
             {
-                owner.ViewModel.ClientBot = new TwitchBot(nameChannel, token);
+                owner.ViewModel.ClientBot = new TwitchBot(nameChannel, token, owner.ViewModel.AppSetting);
                 foreach (var channel in owner.ViewModel.ClientBot.Client.JoinedChannels)
                 {
                     owner.ViewModel.ClientBot.Client.LeaveChannel(channel);
