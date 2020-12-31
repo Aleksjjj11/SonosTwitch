@@ -1,0 +1,150 @@
+﻿<Window x:Class="SonosTwitch.Views.VideoOffersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+        xmlns:local="clr-namespace:SonosTwitch.Views"
+        xmlns:viewmodals="clr-namespace:SonosTwitch.ViewModels"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        Background="#36363D"
+        WindowStartupLocation="CenterScreen"
+        MouseLeftButtonDown="VideoOffersWindow_OnMouseLeftButtonDown"
+        d:DataContext="{d:DesignInstance viewmodals:VideoOffersWindowVM}"
+        Name="VideoOfferWindow"
+        Title="VideoOffersWindow" Height="750" Width="1100">
+    <Window.Resources>
+        <Style x:Key="TextBlock_Username" TargetType="TextBox">
+            <Setter Property="FontSize" Value="16"></Setter>
+            <Setter Property="TextAlignment" Value="Left"></Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0"
+                   Background="#36363D" LastChildFill="False">
+            <Button Height="25" Width="25" Background="Transparent" Padding="5"
+                    DockPanel.Dock="Right" BorderThickness="0"
+                    Command="{Binding CloseWinCommand}" 
+                    CommandParameter="{Binding ElementName=VideoOfferWindow}">
+                <Image Source="/Icons/multiply.png" />
+            </Button>
+        </DockPanel>
+        <DockPanel Grid.Row="1" LastChildFill="False">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <DockPanel LastChildFill="False" Margin="10">
+                    <cefSharp:ChromiumWebBrowser Height="250" Width="350" Margin="10"
+                                             Name="Browser" DockPanel.Dock="Top"
+                                             RenderTransformOrigin="0.5,0.5"
+                                             Address="{Binding CurrentVideo.Url,
+                            Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Style="{StaticResource ButtonBlue}" 
+                            Content="Next video" Width="90"
+                            DockPanel.Dock="Right"
+                            Command="{Binding NextVideoCommand}"/>
+                    <Button Style="{StaticResource ButtonBlue}" 
+                            Content="Previous video" Width="90"
+                            DockPanel.Dock="Left"
+                            Command="{Binding PreviousVideoCommand}"/>
+
+                </DockPanel>
+                <StackPanel Orientation="Vertical">
+                    <DockPanel 
+                               Margin="10">
+                        <TextBlock DockPanel.Dock="Top"
+                                   Text="Reproducing"
+                                   TextWrapping="Wrap"
+                                   FontSize="24"
+                                   Foreground="White"/>
+                        <TextBox DockPanel.Dock="Top"
+                                 Text="{Binding Path=CurrentVideo.VideoTitle,
+                                 Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent"
+                                 IsReadOnly="True"
+                                 Foreground="White"
+                                 BorderThickness="0"
+                                 TextWrapping="Wrap"
+                                 FontSize="28"/>
+                        <TextBox DockPanel.Dock="Top"
+                                 Text="{Binding Path=CurrentVideo.VideoChannel,
+                                 Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent"
+                                 IsReadOnly="True"
+                                 TextWrapping="Wrap"
+                                 Foreground="White"
+                                 BorderThickness="0"
+                                 FontSize="22" 
+                                 Opacity="0.7"/>
+                    </DockPanel>
+                    <TextBox Margin="10"
+                             Text="{Binding Path=CurrentVideo.Username,
+                             Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                             Background="Transparent"
+                             IsReadOnly="True"
+                             TextWrapping="Wrap"
+                             Foreground="White"
+                             BorderThickness="0"
+                             FontSize="16"
+                             Opacity="0.7"
+                    />
+                </StackPanel>
+            </StackPanel>
+            <ScrollViewer DockPanel.Dock="Top">
+                <ItemsControl 
+                    ItemsSource="{Binding Path=CurrentQueue, 
+                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical" Background="#232329" Margin="0 5">
+                                <DockPanel Margin="10">
+                                    <TextBox DockPanel.Dock="Top"
+                                             Text="{Binding Path=VideoTitle,
+                                             Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Background="Transparent"
+                                             IsReadOnly="True"
+                                             TextWrapping="Wrap"
+                                             Foreground="White"
+                                             BorderThickness="0"
+                                             FontSize="28"/>
+                                    <TextBox DockPanel.Dock="Top"
+                                             Text="{Binding Path=VideoChannel,
+                                             Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Background="Transparent"
+                                             IsReadOnly="True"
+                                             TextWrapping="Wrap"
+                                             Foreground="White"
+                                             BorderThickness="0"
+                                             FontSize="22" 
+                                             Opacity="0.7"/>
+                                </DockPanel>
+                                <TextBox Margin="10"
+                                         Text="{Binding Path=Username,
+                                         Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="Transparent"
+                                         IsReadOnly="True"
+                                         TextWrapping="Wrap"
+                                         Foreground="White"
+                                         BorderThickness="0"
+                                         FontSize="16"
+                                         Opacity="0.7"
+                                />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <Button DockPanel.Dock="Bottom"
+                    Style="{StaticResource ButtonGreen}"
+                    Height="50" Width="150" 
+                    FontSize="24"
+                    Margin="20"
+                    Content="Save offers"
+                    ></Button>
+        </DockPanel>
+    </Grid>
+</Window>
