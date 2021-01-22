@@ -17,7 +17,7 @@
         WindowStartupLocation="CenterScreen">
     <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="135" MaxWidth="250" Width="170"></ColumnDefinition>
+            <ColumnDefinition MinWidth="200" MaxWidth="250" Width="200"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition MinWidth="150" MaxWidth="300" Width="200"></ColumnDefinition>
         </Grid.ColumnDefinitions>
@@ -80,21 +80,15 @@
                 </Label.Template>
                 Prefix
             </Label>
-            <TextBox Name="TextBoxPrefix" Margin="10 0 0 5" Text="{Binding Path=AppSetting.Prefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                     Height="20" Width="85" Style="{StaticResource WindowTextBox}">
+            <TextBox Name="TextBoxPrefix" 
+                     Margin="10 0 10 5"
+                     Text="{Binding Path=AppSetting.Prefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Height="20" 
+                     Style="{StaticResource WindowTextBox}">
             </TextBox>
             <Label Name="LabelGroups" Foreground="White"
-                   Background="#4B4B56">
-                <Label.Template>
-                    <ControlTemplate  TargetType="Label">
-                        <Grid>
-                            <Rectangle Fill="#4B4B56"></Rectangle>
-                            <Label Content="{TemplateBinding Content}" HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" Foreground="White" FontSize="14"
-                                   Margin="6 4 0 6" FontFamily="#Arial"></Label>
-                        </Grid>
-                    </ControlTemplate>
-                </Label.Template>
+                   Background="#4B4B56"
+                   Template="{StaticResource LabelSettingTemplate}">
                 GROUPS
             </Label>
             <CheckBox Name="CheckBoxEveryOne" Content="Everyone" Style="{StaticResource WindowCheckBox}"
@@ -114,51 +108,51 @@
                 </CheckBox.ToolTip>
             </CheckBox>
             <Label Name="LabelAdvencedSettings" Foreground="White"
-                   Background="#4B4B56">
-                <Label.Template>
-                    <ControlTemplate  TargetType="Label">
-                        <Grid>
-                            <Rectangle Fill="#4B4B56"></Rectangle>
-                            <Label Content="{TemplateBinding Content}" HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" Foreground="White" FontSize="14"
-                                   Margin="6 4 0 6" FontFamily="#Arial"></Label>
-                        </Grid>
-                    </ControlTemplate>
-                </Label.Template>
+                   Background="#4B4B56"
+                   Template="{StaticResource LabelSettingTemplate}">
                 ADVANCED SETTINGS
             </Label>
-            <CheckBox Name="CheckBoxGetOffer" Content="Get offer" Style="{StaticResource WindowCheckBox}"
-                      Margin="10 4 0 6" IsChecked="{Binding Path=AppSetting.IsGetOffer}" 
-                      >
-            </CheckBox>
-            <Label>
-                <Label.Template>
-                    <ControlTemplate TargetType="Label">
-                        <Grid>
-                            <Rectangle Fill="#4B4B56"></Rectangle>
-                            <Label Content="{TemplateBinding Content}" Margin="6 4 0 0"
-                                   Foreground="#8A8AB0" FontSize="14"
-                                   FontFamily="#Arial" HorizontalAlignment="Left"></Label>
-                        </Grid>
-                    </ControlTemplate>
-                </Label.Template>
-                Timeout
-            </Label>
-            <TextBox Name="TextBoxTimeout" Margin="10 0 0 5" Text="{Binding AppSetting.Timeout}" Height="20" Width="85" 
-                     KeyDown="TextBoxTimeout_OnKeyDown"
-                     Style="{StaticResource WindowTextBox}">
-            </TextBox>
-            <Label Content="Text to Speech" Margin="6 4 0 0"
-                   Foreground="#8A8AB0" FontSize="14"
-                   FontFamily="#Arial" HorizontalAlignment="Left"/>
-            <TextBox Name="TextBox_SpeechCommand" Margin="10 0 0 5" 
-                     Text="{Binding AppSetting.SpeechCommand}" 
-                     Height="20" Width="85" ToolTip="Command for text to speech"
-                     Style="{StaticResource WindowTextBox}"/>
-            <Slider Margin="10" Minimum="0" Maximum="100"
-                    ToolTip="{Binding Path=AppSetting.VolumeTextSpeech, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource StyleSlider}" TickFrequency="1"
-                    Value="{Binding Path=AppSetting.VolumeTextSpeech, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Slider>
+            <ScrollViewer>
+                <StackPanel Orientation="Vertical">
+                    <Button Style="{StaticResource ButtonBlue}"
+                            Content="Open video offers"
+                            Command="{Binding OpenVideoOffersWindow}"/>
+                    <Label Style="{StaticResource LabelForTextBoxStyle}"
+                           Content="Video receive command"></Label>
+                    <TextBox Name="TextBox_VideoReceiveCommand" Margin="10 0 10 5" 
+                             Text="{Binding AppSetting.VideoReceiveOffer}" 
+                             Height="20" 
+                             ToolTip="Command to receive video offers"
+                             Style="{StaticResource WindowTextBox}"/>
+                    <CheckBox Name="CheckBoxGetOffer" 
+                              Content="Get offer" 
+                              Style="{StaticResource WindowCheckBox}"
+                              Margin="10 4 0 6" 
+                              IsChecked="{Binding Path=AppSetting.IsGetOffer}">
+                    </CheckBox>
+                    <Label Style="{StaticResource LabelForTextBoxStyle}">
+                        Timeout
+                    </Label>
+                    <TextBox Name="TextBoxTimeout" Margin="10 0 10 5" Grid.Column="0"
+                             Text="{Binding AppSetting.Timeout}"
+                             Height="20" 
+                             KeyDown="TextBoxTimeout_OnKeyDown"
+                             Style="{StaticResource WindowTextBox}">
+                    </TextBox>
+                    
+                    <Label Content="Text to Speech" 
+                           Style="{StaticResource LabelForTextBoxStyle}"/>
+                    <TextBox Name="TextBox_SpeechCommand" Margin="10 0 10 5" 
+                             Text="{Binding AppSetting.SpeechCommand}" 
+                             Height="20" 
+                             ToolTip="Command for text to speech"
+                             Style="{StaticResource WindowTextBox}"/>
+                    <Slider Margin="10" Minimum="0" Maximum="100"
+                            ToolTip="{Binding Path=AppSetting.VolumeTextSpeech, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource StyleSlider}" TickFrequency="1"
+                            Value="{Binding Path=AppSetting.VolumeTextSpeech, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Slider>
+                </StackPanel>
+            </ScrollViewer>
             <Button Name="ButtonUploadIcon" Style="{StaticResource ButtonGreen}" 
                     Content="Save" MaxHeight="30" FontSize="14"
                     Margin="20 20 20 0" 

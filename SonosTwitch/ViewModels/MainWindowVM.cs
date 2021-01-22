@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using SonosTwitch.Views;
 
 namespace SonosTwitch.ViewModels
 {
@@ -170,12 +171,17 @@ namespace SonosTwitch.ViewModels
             }
         }, x => true);
 
-        private ICommand _deleteSoundCommand;
 
-        public ICommand DeleteSoundCommand => _deleteSoundCommand ?? new RelayCommand<string>(x =>
+        public ICommand DeleteSoundCommand =>  new RelayCommand<string>(x =>
         {
             //Delete sound by X's values from dictionary
             AppSetting.DictionaryCommands.Remove(AppSetting.DictionaryCommands.First(k => k.Command == x));
         }, x => true);
+
+        public ICommand OpenVideoOffersWindow => new RelayCommand(() =>
+        {
+            var page = new VideoOffersWindow(AppSetting, ClientBot);
+            page.Show();
+        }, () => true);
     }
 }

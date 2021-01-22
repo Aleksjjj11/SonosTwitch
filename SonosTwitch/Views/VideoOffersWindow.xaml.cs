@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SonosTwitch.Models;
 using SonosTwitch.ViewModels;
 
 namespace SonosTwitch.Views
@@ -21,10 +22,9 @@ namespace SonosTwitch.Views
     /// </summary>
     public partial class VideoOffersWindow : Window
     {
-        private VideoOffersWindowVM viewModel;
-        public VideoOffersWindow()
+        public VideoOffersWindow(AppSetting setting, TwitchBot bot)
         {
-            DataContext = viewModel = new VideoOffersWindowVM();
+            DataContext = new VideoOffersWindowVM(setting, bot);
             InitializeComponent();
         }
 

@@ -151,6 +151,18 @@ namespace SonosTwitch
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DictionaryCommands)));
             }
         }
+
+        private string _videoReceiveOffer;
+
+        public string VideoReceiveOffer
+        {
+            get => _videoReceiveOffer;
+            set
+            {
+                _videoReceiveOffer = value;
+                OnPropertyChanged(nameof(VideoReceiveOffer));
+            }
+        }
         public DateTime TimeLastSaved { get; set; }
         [field: NonSerialized]
         public DateTime TimeLastLoaded;

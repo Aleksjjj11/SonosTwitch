@@ -13,6 +13,26 @@ namespace SonosTwitch.ViewModels
 {
     public class VideoOffersWindowVM : BaseVM
     {
+        private TwitchBot _clientBot;
+        public TwitchBot ClientBot
+        {
+            get => _clientBot;
+            set
+            {
+                _clientBot = value;
+                OnPropertyChanged();
+            }
+        }
+        private AppSetting _appSetting;
+        public AppSetting AppSetting
+        {
+            get => _appSetting;
+            set
+            {
+                _appSetting = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ObservableCollection<YoutubeVideoOffer> YoutubeOffers { get; set; }
         private YoutubeVideoOffer _currentVideo;
@@ -43,11 +63,9 @@ namespace SonosTwitch.ViewModels
             }
         }
 
-        private ICommand _nextVideoCommand;
-
         public ICommand NextVideoCommand
         {
-            get => _nextVideoCommand ?? new RelayCommand(() =>
+            get => new RelayCommand(() =>
             {
                 if (YoutubeOffers.Count == 0) return;
                 var currentIndex = YoutubeOffers.IndexOf(CurrentVideo);
@@ -56,11 +74,9 @@ namespace SonosTwitch.ViewModels
             }, () => YoutubeOffers.IndexOf(CurrentVideo) < YoutubeOffers.Count - 1);
         }
 
-        private ICommand _previousVideoCommand;
-
         public ICommand PreviousVideoCommand
         {
-            get => _previousVideoCommand ?? new RelayCommand(() =>
+            get => new RelayCommand(() =>
             {
                 var currentIndex = YoutubeOffers.IndexOf(CurrentVideo);
                 CurrentVideo = YoutubeOffers[currentIndex - 1];
@@ -68,25 +84,27 @@ namespace SonosTwitch.ViewModels
             }, () => YoutubeOffers.IndexOf(CurrentVideo) > 0);
         }
 
-        private ICommand _closeWinCommand;
-
         public ICommand CloseWinCommand
         {
-            get => _closeWinCommand ?? new RelayCommand<Window>(x =>
+            get => new RelayCommand<Window>(x =>
             {
                 x.Close();
             }, x => true);
         }
-        public VideoOffersWindowVM()
+        public VideoOffersWindowVM(AppSetting setting, TwitchBot bot)
         {
-            YoutubeOffers = new ObservableCollection<YoutubeVideoOffer>
+            AppSetting = setting;
+            ClientBot = bot;
+            ClientBot.OnVideoOfferReceived += (sender, args) =>
             {
-                new YoutubeVideoOffer("https://www.youtube.com/embed/-CNCps_3Tjs", "Me"),
-                new YoutubeVideoOffer("https://www.youtube.com/embed/X1gbkD5JhcY", "Username2"),
-                new YoutubeVideoOffer("https://www.youtube.com/embed/QAc7lDrXPv8", "Username3"),
-                new YoutubeVideoOffer("https://www.youtube.com/embed/1GPsepFmNes", "Username4")
+                //TODO Сделать преобразование обычной ссылки на видео в формат embed
+                YoutubeOffers.Add(
+                    new YoutubeVideoOffer(
+                         args.ChatMessage.Message.Remove(0, AppSetting.Prefix.Length + AppSetting.VideoReceiveOffer.Length),
+                            args.ChatMessage.Username));
+                OnPropertyChanged(nameof(CurrentQueue));
             };
-            CurrentVideo = YoutubeOffers.First();
+            YoutubeOffers = new ObservableCollection<YoutubeVideoOffer>();
         }
     }
 }
