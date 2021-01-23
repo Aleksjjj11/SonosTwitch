@@ -214,6 +214,8 @@
     <Compile Include="AppSetting.cs" />
     <Compile Include="Commands\BaseRelayCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Interfaces\IAppSetting.cs" />
+    <Compile Include="Models\AppSettingJson.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Offer.cs" />
     <Compile Include="Models\Sound.cs" />
@@ -221,9 +223,6 @@
     <Compile Include="ViewModels\AuthorizeTwitchVM.cs" />
     <Compile Include="ViewModels\MainWindowVM.cs" />
     <Compile Include="ViewModels\VideoOffersWindowVM.cs" />
-    <Compile Include="Views\AuthorizeTwitch.xaml.cs">
-      <DependentUpon>AuthorizeTwitch.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\BaseVM.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -238,7 +237,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Styles.xaml" />
-    <Page Include="Views\AuthorizeTwitch.xaml" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -286,6 +284,7 @@
     <Content Include="Icons\next.png" />
     <Content Include="Icons\next.svg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

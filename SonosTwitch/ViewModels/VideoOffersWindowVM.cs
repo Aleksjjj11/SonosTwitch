@@ -63,34 +63,26 @@ namespace SonosTwitch.ViewModels
             }
         }
 
-        public ICommand NextVideoCommand
-        {
-            get => new RelayCommand(() =>
+        public ICommand NextVideoCommand => new RelayCommand(() =>
             {
                 if (YoutubeOffers.Count == 0) return;
                 var currentIndex = YoutubeOffers.IndexOf(CurrentVideo);
                 CurrentVideo = YoutubeOffers[currentIndex + 1];
                 OnPropertyChanged(nameof(CurrentQueue));
             }, () => YoutubeOffers.IndexOf(CurrentVideo) < YoutubeOffers.Count - 1);
-        }
 
-        public ICommand PreviousVideoCommand
-        {
-            get => new RelayCommand(() =>
+        public ICommand PreviousVideoCommand => new RelayCommand(() =>
             {
                 var currentIndex = YoutubeOffers.IndexOf(CurrentVideo);
                 CurrentVideo = YoutubeOffers[currentIndex - 1];
                 OnPropertyChanged(nameof(CurrentQueue));
             }, () => YoutubeOffers.IndexOf(CurrentVideo) > 0);
-        }
 
-        public ICommand CloseWinCommand
-        {
-            get => new RelayCommand<Window>(x =>
+        public ICommand CloseWinCommand => new RelayCommand<Window>(x =>
             {
                 x.Close();
             }, x => true);
-        }
+
         public VideoOffersWindowVM(AppSetting setting, TwitchBot bot)
         {
             AppSetting = setting;

@@ -3,11 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using SonosTwitch.Interfaces;
 
 namespace SonosTwitch
 {
     [Serializable]
-    public class AppSetting : Item
+    public class AppSetting : Item, IAppSetting
     {
         private ObservableCollection<Sound> _dictionary;
 
@@ -164,6 +165,11 @@ namespace SonosTwitch
             }
         }
         public DateTime TimeLastSaved { get; set; }
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
+
         [field: NonSerialized]
         public DateTime TimeLastLoaded;
         [field: NonSerialized]

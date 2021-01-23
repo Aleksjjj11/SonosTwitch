@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SonosTwitch.Interfaces;
 
 namespace SonosTwitch
 {
@@ -7,6 +8,6 @@ namespace SonosTwitch
     /// </summary>
     public partial class App
     {
-        public static AppSetting Setting;
+        //public static IAppSetting Setting;
     }
 }

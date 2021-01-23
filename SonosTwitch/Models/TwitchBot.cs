@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using SonosTwitch.Interfaces;
 using TwitchLib.Api;
 using TwitchLib.Api.Core;
 using TwitchLib.Api.Core.Enums;
@@ -25,9 +26,9 @@ namespace SonosTwitch.Models
 
         public event VideoOfferReceived OnVideoOfferReceived;
         public TwitchClient Client { get; }
-        private AppSetting _setting;
+        private IAppSetting _setting;
 	
-        public TwitchBot(string login, string token, AppSetting setting)
+        public TwitchBot(string login, string token, ref IAppSetting setting)
         {
             _setting = setting;
             try
@@ -75,7 +76,7 @@ namespace SonosTwitch.Models
         {
             try
             {
-                if (e.ChatMessage.Message[0].ToString() == App.Setting.Prefix)
+                if (e.ChatMessage.Message[0].ToString() == _setting.Prefix)
                 {
                     if (e.ChatMessage.Message.Split(' ')[0]
                         .Remove(0, _setting.Prefix.Length) == _setting.VideoReceiveOffer)

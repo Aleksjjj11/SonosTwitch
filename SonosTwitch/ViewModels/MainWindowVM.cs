@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using SonosTwitch.Interfaces;
 using SonosTwitch.Views;
 
 namespace SonosTwitch.ViewModels
@@ -17,120 +18,116 @@ namespace SonosTwitch.ViewModels
     public class MainWindowVM : BaseVM
     {
         const string FileName = @"SavedSetting.bin";
-        private TwitchBot clientBot;
+        private TwitchBot _clientBot;
         public TwitchBot ClientBot
         {
-            get => clientBot;
+            get => _clientBot;
             set
             {
-                clientBot = value;
+                _clientBot = value;
                 OnPropertyChanged();
             }
         }
-        private AppSetting appSetting;
-        public AppSetting AppSetting
+        private IAppSetting _appSetting;
+        public IAppSetting AppSetting
         {
-            get => appSetting;
+            get => _appSetting;
             set
             {
-                appSetting = value;
+                _appSetting = value;
                 OnPropertyChanged();
+            }
+        }
+        public ObservableCollection<YoutubeVideoOffer> YoutubeOffers { get; set; }
+        private YoutubeVideoOffer _currentVideo;
+        private ObservableCollection<YoutubeVideoOffer> _currentQueue;
+        private string _login;
+        private string _token;
+
+        public ObservableCollection<YoutubeVideoOffer> CurrentQueue
+        {
+            get
+            {
+                _currentQueue = _currentQueue ?? new ObservableCollection<YoutubeVideoOffer>();
+                _currentQueue.Clear();
+                for (int i = YoutubeOffers.IndexOf(CurrentVideo) + 1; i < YoutubeOffers.Count; i++)
+                {
+                    _currentQueue.Add(YoutubeOffers[i]);
+                }
+
+                return _currentQueue;
+            }
+            set => _currentQueue = value;
+        }
+
+        public YoutubeVideoOffer CurrentVideo
+        {
+            get => _currentVideo;
+            set
+            {
+                _currentVideo = value;
+                OnPropertyChanged(nameof(CurrentVideo));
             }
         }
         public ObservableCollection<Offer> QueueOffers { get; set; }
-        //private ObservableCollection<Sound> sounds;
-        //public ObservableCollection<Sound> Sounds
-        //{
-        //    get => sounds; 
-        //    set
-        //    {
-        //        sounds = value;
-        //        OnPropertyChanged();
-        //    } 
-        //}
 
         public MainWindowVM()
         {
-            LoadSaving();
-            appSetting = App.Setting;
-            clientBot = new TwitchBot(appSetting.TwitchChannel, appSetting.TwitchToken, appSetting);
+            //LoadSaving();
+            AppSetting = new AppSettingJson("SettingApp.json");
+            ClientBot = new TwitchBot(AppSetting.TwitchChannel, AppSetting.TwitchToken, ref _appSetting);
             QueueOffers = new ObservableCollection<Offer>();
-            //sounds = new ObservableCollection<Sound>();
-            //foreach (var el in appSetting.DictionaryCommands)
-            //{
-            //    sounds.Add(el);
-            //}
-        }
-        private ICommand _addSound;
-        public ICommand AddSoundCommand
-        {
-            get => _addSound ?? new RelayCommand(() =>
+            ClientBot.OnVideoOfferReceived += (sender, args) =>
             {
-                AppSetting.DictionaryCommands.Add(new Sound($"NewCommand{AppSetting.DictionaryCommands.Count}", "Path"));
-            }, () => true);
+                //TODO Сделать преобразование обычной ссылки на видео в формат embed
+                YoutubeOffers.Add(
+                    new YoutubeVideoOffer(
+                         args.ChatMessage.Message.Remove(0, AppSetting.Prefix.Length + AppSetting.VideoReceiveOffer.Length),
+                            args.ChatMessage.Username));
+                OnPropertyChanged(nameof(CurrentQueue));
+            };
+            YoutubeOffers = new ObservableCollection<YoutubeVideoOffer>();
         }
-        private ICommand _resetAllSounds;
-        public ICommand ResetAllSoundsCommand
+        public ICommand AddSoundCommand => new RelayCommand(() =>
         {
-            get => _resetAllSounds ?? new RelayCommand(() => 
-            {
-                AppSetting.DictionaryCommands.Clear();
-            }, () => true);
-        }
-        private ICommand _saveSetting;
-        public ICommand SaveSettingCommand
+            AppSetting.DictionaryCommands.Add(new Sound($"NewCommand{AppSetting.DictionaryCommands.Count}", "Path"));
+        }, () => true);
+
+        public ICommand ResetAllSoundsCommand => new RelayCommand(() =>
         {
-            get => _saveSetting ?? new RelayCommand(() => 
-            {
-                App.Setting = AppSetting;
-                ClientBot.UpdateSetting(AppSetting);
-                SaveInFile();   
-            }, () => true);
-        }
-        private ICommand _hideApp;
-        public ICommand HideAppCommand
+            AppSetting.DictionaryCommands.Clear();
+        }, () => true);
+
+        public ICommand SaveSettingCommand => new RelayCommand(() =>
         {
-            get => _hideApp ?? new RelayCommand<Window>(x =>
-            {
-                x.Hide();
-            }, x => true);
-        }
-        private ICommand _openTwitchEditWindow;
-        public ICommand OpenTwitchEditWindow
+            AppSetting.Save();
+            /*App.Setting = AppSetting;
+            ClientBot.UpdateSetting(AppSetting);
+            SaveInFile();*/
+        }, () => true);
+
+        public ICommand HideAppCommand => new RelayCommand<Window>(x =>
         {
-           get => _openTwitchEditWindow ?? new RelayCommand<Window>(x =>
-           {
-               AuthorizeTwitch page = new AuthorizeTwitch();
-               page.Owner = x;
-               page.Show();
-           });
-        }
-        //private ICommand _deleteSound;
-        //public ICommand DeleteSoundCommand
-        //{
-        //    get => _deleteSound ?? new RelayCommand<Sound>(x =>
-        //    {
-        //        try
-        //        {
-        //            //Sounds.Remove(x);
-        //            MessageBox.Show("click cluck");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show(ex.Message);
-        //        }
-        //    }, x => true);
-        //}
+            x.Hide();
+        }, x => true);
+
+        public ICommand OpenTwitchEditWindow => new RelayCommand<Window>(x =>
+        {
+            AuthorizeTwitch page = new AuthorizeTwitch(AppSetting, ClientBot);
+            page.Owner = x;
+            page.Show();
+        });
+
         public static void SaveInFile()
         {
-            Stream saveFileStream = File.Create(FileName);
+            /*Stream saveFileStream = File.Create(FileName);
             BinaryFormatter serializer = new BinaryFormatter();
             serializer.Serialize(saveFileStream, App.Setting);
-            saveFileStream.Close();
+            saveFileStream.Close();*/
         }
         public bool LoadSaving()
         {
-            if (File.Exists(FileName))
+            /*if (File.Exists(FileName))
             {
                 Stream openFileStream = File.OpenRead(FileName);
                 BinaryFormatter deserializer = new BinaryFormatter();
@@ -141,19 +138,17 @@ namespace SonosTwitch.ViewModels
                 return true;
             }
 
-            App.Setting = new AppSetting();
+            App.Setting = new AppSetting();*/
             return false;
         }
 
-        private ICommand _declineOfferCommand;
-        public ICommand DeclineOfferCommand => _declineOfferCommand ?? new RelayCommand<TextBlock>(x =>
+        public ICommand DeclineOfferCommand => new RelayCommand<TextBlock>(x =>
         {
             QueueOffers.Remove(QueueOffers.First(k => k.Id == (x.Tag as string)));
         }, x => true);
 
 
-        private ICommand _acceptOfferCommand;
-        public ICommand AcceptOfferCommand => _acceptOfferCommand ??  new RelayCommand<TextBlock>(x =>
+        public ICommand AcceptOfferCommand => new RelayCommand<TextBlock>(x =>
         {
             try
             {
@@ -172,7 +167,7 @@ namespace SonosTwitch.ViewModels
         }, x => true);
 
 
-        public ICommand DeleteSoundCommand =>  new RelayCommand<string>(x =>
+        public ICommand DeleteSoundCommand => new RelayCommand<string>(x =>
         {
             //Delete sound by X's values from dictionary
             AppSetting.DictionaryCommands.Remove(AppSetting.DictionaryCommands.First(k => k.Command == x));
@@ -180,8 +175,61 @@ namespace SonosTwitch.ViewModels
 
         public ICommand OpenVideoOffersWindow => new RelayCommand(() =>
         {
-            var page = new VideoOffersWindow(AppSetting, ClientBot);
-            page.Show();
+            /*var page = new VideoOffersWindow(AppSetting, ClientBot);
+            page.Show();*/
         }, () => true);
+
+        public ICommand NextVideoCommand => new RelayCommand(() =>
+        {
+            if (YoutubeOffers.Count == 0) return;
+            var currentIndex = YoutubeOffers.IndexOf(CurrentVideo);
+            CurrentVideo = YoutubeOffers[currentIndex + 1];
+            OnPropertyChanged(nameof(CurrentQueue));
+        }, () => YoutubeOffers.IndexOf(CurrentVideo) < YoutubeOffers.Count - 1);
+
+        public ICommand PreviousVideoCommand => new RelayCommand(() =>
+        {
+            var currentIndex = YoutubeOffers.IndexOf(CurrentVideo);
+            CurrentVideo = YoutubeOffers[currentIndex - 1];
+            OnPropertyChanged(nameof(CurrentQueue));
+        }, () => YoutubeOffers.IndexOf(CurrentVideo) > 0);
+
+        public ICommand CloseWinCommand => new RelayCommand<Window>(x =>
+        {
+            x.Close();
+        }, x => true);
+        public ICommand LoginCommand => new RelayCommand(() =>
+        {
+            try
+            {
+                ClientBot = new TwitchBot(Login, Token, ref _appSetting);
+                AppSetting.TwitchChannel = Login;
+                AppSetting.TwitchToken = Token;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }, () => true);
+
+        public string Login
+        {
+            get => _login;
+            set
+            {
+                _login = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Token
+        {
+            get => _token;
+            set
+            {
+                _token = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

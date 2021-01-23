@@ -282,8 +282,9 @@
         <Setter Property="FontSize" Value="14"></Setter>
         <Setter Property="FontFamily" Value="#Arial"></Setter>
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>
-        <!--Margin="6 4 0 0"
-        Foreground="#8A8AB0" FontSize="14"
-        FontFamily="#Arial" HorizontalAlignment="Left"-->
+    </Style>
+    <Style x:Key="TextBlockUsername" TargetType="TextBox">
+        <Setter Property="FontSize" Value="16"></Setter>
+        <Setter Property="TextAlignment" Value="Left"></Setter>
     </Style>
 </ResourceDictionary>

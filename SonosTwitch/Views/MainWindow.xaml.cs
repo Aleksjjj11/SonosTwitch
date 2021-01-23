@@ -11,6 +11,7 @@ using System.Speech.Synthesis;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -127,19 +128,19 @@ namespace SonosTwitch
 
         private void SaveChangeListCommands()
         {
-            App.Setting.DictionaryCommands = App.Setting.DictionaryCommands ?? new ObservableCollection<Sound>();
+            /*App.Setting.DictionaryCommands = App.Setting.DictionaryCommands ?? new ObservableCollection<Sound>();
             App.Setting.DictionaryCommands.Clear();
             foreach (var sound in ViewModel.AppSetting.DictionaryCommands)
             {
                 App.Setting.DictionaryCommands.Add(sound);
-            }
+            }*/
         }
 
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
-            App.Setting = ViewModel.AppSetting;
-            SaveChangeListCommands();
-            MainWindowVM.SaveInFile();
+            /*App.Setting = ViewModel.AppSetting;*/
+            /*SaveChangeListCommands();*/
+            /*MainWindowVM.SaveInFile();*/
             Application.Current.Shutdown();
         }
 
@@ -195,6 +196,11 @@ namespace SonosTwitch
         private void ShowItem_Click(object sender, EventArgs e)
         {
             this.Show();
+        }
+
+        private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start((sender as Hyperlink).NavigateUri.ToString());
         }
     }
 }
