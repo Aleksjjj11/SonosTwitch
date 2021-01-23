@@ -220,7 +220,6 @@
     <Compile Include="Models\Offer.cs" />
     <Compile Include="Models\Sound.cs" />
     <Compile Include="Models\YoutubeVideoOffer.cs" />
-    <Compile Include="ViewModels\AuthorizeTwitchVM.cs" />
     <Compile Include="ViewModels\MainWindowVM.cs" />
     <Compile Include="ViewModels\VideoOffersWindowVM.cs" />
     <Compile Include="ViewModels\BaseVM.cs" />

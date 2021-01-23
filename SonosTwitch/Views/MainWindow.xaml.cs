@@ -126,36 +126,12 @@ namespace SonosTwitch
             }
         }
 
-        private void SaveChangeListCommands()
-        {
-            /*App.Setting.DictionaryCommands = App.Setting.DictionaryCommands ?? new ObservableCollection<Sound>();
-            App.Setting.DictionaryCommands.Clear();
-            foreach (var sound in ViewModel.AppSetting.DictionaryCommands)
-            {
-                App.Setting.DictionaryCommands.Add(sound);
-            }*/
-        }
-
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
-            /*App.Setting = ViewModel.AppSetting;*/
-            /*SaveChangeListCommands();*/
-            /*MainWindowVM.SaveInFile();*/
+            (DataContext as MainWindowVM)?.AppSetting.Save();
             Application.Current.Shutdown();
         }
 
-        //Очень странные обработчики //TODO привязать их напрямую со свойствами
-
-        //private void ButtonDeleteCommand_OnClick(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        ViewModel.AppSetting.DictionaryCommands.Remove(ViewModel.AppSetting.DictionaryCommands.First(x => x.Command == (string) ((Button) sender).DataContext));
-        //    } catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //}
         private void TextBoxTimeout_OnKeyDown(object sender, KeyEventArgs e)
         {
             if (!(e.Key >= Key.D0 && e.Key <= Key.D9 || e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9 ||

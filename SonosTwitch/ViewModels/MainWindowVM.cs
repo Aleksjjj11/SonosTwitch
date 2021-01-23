@@ -73,7 +73,6 @@ namespace SonosTwitch.ViewModels
 
         public MainWindowVM()
         {
-            //LoadSaving();
             AppSetting = new AppSettingJson("SettingApp.json");
             ClientBot = new TwitchBot(AppSetting.TwitchChannel, AppSetting.TwitchToken, ref _appSetting);
             QueueOffers = new ObservableCollection<Offer>();
@@ -101,46 +100,12 @@ namespace SonosTwitch.ViewModels
         public ICommand SaveSettingCommand => new RelayCommand(() =>
         {
             AppSetting.Save();
-            /*App.Setting = AppSetting;
-            ClientBot.UpdateSetting(AppSetting);
-            SaveInFile();*/
         }, () => true);
 
         public ICommand HideAppCommand => new RelayCommand<Window>(x =>
         {
             x.Hide();
         }, x => true);
-
-        public ICommand OpenTwitchEditWindow => new RelayCommand<Window>(x =>
-        {
-            AuthorizeTwitch page = new AuthorizeTwitch(AppSetting, ClientBot);
-            page.Owner = x;
-            page.Show();
-        });
-
-        public static void SaveInFile()
-        {
-            /*Stream saveFileStream = File.Create(FileName);
-            BinaryFormatter serializer = new BinaryFormatter();
-            serializer.Serialize(saveFileStream, App.Setting);
-            saveFileStream.Close();*/
-        }
-        public bool LoadSaving()
-        {
-            /*if (File.Exists(FileName))
-            {
-                Stream openFileStream = File.OpenRead(FileName);
-                BinaryFormatter deserializer = new BinaryFormatter();
-                App.Setting = (AppSetting)deserializer.Deserialize(openFileStream);
-                App.Setting.TimeLastLoaded = DateTime.Now;
-                openFileStream.Close();
-
-                return true;
-            }
-
-            App.Setting = new AppSetting();*/
-            return false;
-        }
 
         public ICommand DeclineOfferCommand => new RelayCommand<TextBlock>(x =>
         {
@@ -172,12 +137,6 @@ namespace SonosTwitch.ViewModels
             //Delete sound by X's values from dictionary
             AppSetting.DictionaryCommands.Remove(AppSetting.DictionaryCommands.First(k => k.Command == x));
         }, x => true);
-
-        public ICommand OpenVideoOffersWindow => new RelayCommand(() =>
-        {
-            /*var page = new VideoOffersWindow(AppSetting, ClientBot);
-            page.Show();*/
-        }, () => true);
 
         public ICommand NextVideoCommand => new RelayCommand(() =>
         {
