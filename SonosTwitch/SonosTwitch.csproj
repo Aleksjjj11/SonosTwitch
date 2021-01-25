@@ -216,7 +216,9 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Interfaces\IAppSetting.cs" />
     <Compile Include="Models\AppSettingJson.cs" />
+    <Compile Include="Models\GameOffer.cs" />
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\MusicOffer.cs" />
     <Compile Include="Models\Offer.cs" />
     <Compile Include="Models\Sound.cs" />
     <Compile Include="Models\YoutubeVideoOffer.cs" />

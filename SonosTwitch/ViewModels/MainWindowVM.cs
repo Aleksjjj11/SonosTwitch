@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using SonosTwitch.Interfaces;
 using SonosTwitch.Views;
+using TwitchLib.Api.Helix.Models.Games;
 
 namespace SonosTwitch.ViewModels
 {
@@ -38,26 +39,70 @@ namespace SonosTwitch.ViewModels
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<YoutubeVideoOffer> YoutubeOffers { get; set; }
-        private YoutubeVideoOffer _currentVideo;
-        private ObservableCollection<YoutubeVideoOffer> _currentQueue;
-        private string _login;
-        private string _token;
+        public ObservableCollection<YoutubeVideoOffer> YoutubeOffers { get; }
+        public ObservableCollection<YoutubeVideoOffer> MusicOffers { get; }
+        private ObservableCollection<YoutubeVideoOffer> _currentMusicQueue;
+        private YoutubeVideoOffer _currentMusic;
 
-        public ObservableCollection<YoutubeVideoOffer> CurrentQueue
+        public ObservableCollection<GameOffer> GameOffers
         {
             get
             {
-                _currentQueue = _currentQueue ?? new ObservableCollection<YoutubeVideoOffer>();
-                _currentQueue.Clear();
-                for (int i = YoutubeOffers.IndexOf(CurrentVideo) + 1; i < YoutubeOffers.Count; i++)
+                var result = new ObservableCollection<GameOffer>();
+                foreach (var gameOffer in _gameOffers)
                 {
-                    _currentQueue.Add(YoutubeOffers[i]);
+                    result.Add(gameOffer);
                 }
 
-                return _currentQueue;
+                return result;
             }
-            set => _currentQueue = value;
+        }
+        private ObservableCollection<GameOffer> _gameOffers;
+        private YoutubeVideoOffer _currentVideo;
+        private ObservableCollection<YoutubeVideoOffer> _currentVideoQueue;
+        private string _login;
+        private string _token;
+
+        public YoutubeVideoOffer CurrentMusic
+        {
+            get => _currentMusic;
+            set
+            {
+                _currentMusic = value;
+                OnPropertyChanged(nameof(CurrentMusic));
+            }
+        }
+
+        public ObservableCollection<YoutubeVideoOffer> CurrentVideoQueue
+        {
+            get
+            {
+                _currentVideoQueue = _currentVideoQueue ?? new ObservableCollection<YoutubeVideoOffer>();
+                _currentVideoQueue.Clear();
+                for (int i = YoutubeOffers.IndexOf(CurrentVideo) + 1; i < YoutubeOffers.Count; i++)
+                {
+                    _currentVideoQueue.Add(YoutubeOffers[i]);
+                }
+
+                return _currentVideoQueue;
+            }
+            set => _currentVideoQueue = value;
+        }
+
+        public ObservableCollection<YoutubeVideoOffer> CurrentMusicQueue
+        {
+            get
+            {
+                _currentMusicQueue = _currentMusicQueue ?? new ObservableCollection<YoutubeVideoOffer>();
+                _currentMusicQueue.Clear();
+                for (int i = MusicOffers.IndexOf(CurrentMusic) + 1; i < MusicOffers.Count; i++)
+                {
+                    _currentMusicQueue.Add(MusicOffers[i]);
+                }
+
+                return _currentMusicQueue;
+            }
+            set => _currentMusicQueue = value;
         }
 
         public YoutubeVideoOffer CurrentVideo
@@ -76,16 +121,32 @@ namespace SonosTwitch.ViewModels
             AppSetting = new AppSettingJson("SettingApp.json");
             ClientBot = new TwitchBot(AppSetting.TwitchChannel, AppSetting.TwitchToken, ref _appSetting);
             QueueOffers = new ObservableCollection<Offer>();
+            YoutubeOffers = new ObservableCollection<YoutubeVideoOffer>();
+            MusicOffers = new ObservableCollection<YoutubeVideoOffer>();
+            _gameOffers = new ObservableCollection<GameOffer>();
+            //Action when to receive video offer
             ClientBot.OnVideoOfferReceived += (sender, args) =>
             {
-                //TODO Сделать преобразование обычной ссылки на видео в формат embed
                 YoutubeOffers.Add(
                     new YoutubeVideoOffer(
-                         args.ChatMessage.Message.Remove(0, AppSetting.Prefix.Length + AppSetting.VideoReceiveOffer.Length),
+                         args.ChatMessage.Message.Remove(0, AppSetting.Prefix.Length + AppSetting.CommandVideoReceiver.Length),
                             args.ChatMessage.Username));
-                OnPropertyChanged(nameof(CurrentQueue));
+                OnPropertyChanged(nameof(CurrentVideoQueue));
             };
-            YoutubeOffers = new ObservableCollection<YoutubeVideoOffer>();
+            //Action when to receive music offer
+            ClientBot.OnMusicOfferReceived += (sender, args) =>
+            {
+                MusicOffers.Add(new YoutubeVideoOffer(
+                    args.ChatMessage.Message.Remove(0, AppSetting.Prefix.Length + AppSetting.CommandMusicReceiver.Length),
+                    args.ChatMessage.Username, false));
+                OnPropertyChanged(nameof(CurrentMusicQueue));
+            };
+            //Action when to receive game offer
+            ClientBot.OnGameOfferReceived += (sender, args) =>
+            {
+                _gameOffers.Add(new GameOffer(args.ChatMessage.Username,  args.ChatMessage.Message.Remove(0, AppSetting.Prefix.Length + AppSetting.CommandGameReceiver.Length)));
+                OnPropertyChanged(nameof(GameOffers));
+            };
         }
         public ICommand AddSoundCommand => new RelayCommand(() =>
         {
@@ -143,14 +204,14 @@ namespace SonosTwitch.ViewModels
             if (YoutubeOffers.Count == 0) return;
             var currentIndex = YoutubeOffers.IndexOf(CurrentVideo);
             CurrentVideo = YoutubeOffers[currentIndex + 1];
-            OnPropertyChanged(nameof(CurrentQueue));
+            OnPropertyChanged(nameof(CurrentVideoQueue));
         }, () => YoutubeOffers.IndexOf(CurrentVideo) < YoutubeOffers.Count - 1);
 
         public ICommand PreviousVideoCommand => new RelayCommand(() =>
         {
             var currentIndex = YoutubeOffers.IndexOf(CurrentVideo);
             CurrentVideo = YoutubeOffers[currentIndex - 1];
-            OnPropertyChanged(nameof(CurrentQueue));
+            OnPropertyChanged(nameof(CurrentVideoQueue));
         }, () => YoutubeOffers.IndexOf(CurrentVideo) > 0);
 
         public ICommand CloseWinCommand => new RelayCommand<Window>(x =>
@@ -190,5 +251,26 @@ namespace SonosTwitch.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public ICommand NextMusicCommand => new RelayCommand(() =>
+        {
+            if (MusicOffers.Count == 0) return;
+            var currentIndex = MusicOffers.IndexOf(CurrentMusic);
+            CurrentMusic = MusicOffers[currentIndex + 1];
+            OnPropertyChanged(nameof(CurrentMusicQueue));
+        }, () => MusicOffers.IndexOf(CurrentMusic) < MusicOffers.Count - 1);
+
+        public ICommand PreviousMusicCommand => new RelayCommand(() =>
+        {
+            var currentIndex = MusicOffers.IndexOf(CurrentMusic);
+            CurrentMusic = MusicOffers[currentIndex - 1];
+            OnPropertyChanged(nameof(CurrentMusicQueue));
+        }, () => MusicOffers.IndexOf(CurrentMusic) > 0);
+
+        public ICommand DeleteGameOffer => new RelayCommand<object>(index =>
+        {
+            _gameOffers.RemoveAt((int)index);
+            OnPropertyChanged(nameof(GameOffers));
+        }, index => index is int);
     }
 }

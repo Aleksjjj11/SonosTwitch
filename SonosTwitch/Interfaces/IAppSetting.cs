@@ -13,7 +13,6 @@ namespace SonosTwitch.Interfaces
         public string TwitchChannel { get; set; }
         public string Prefix { get; set; }
         public string SpeechCommand { get; set; }
-        public string VideoReceiveOffer { get; set; }
         public int VolumeTextSpeech { get; set; }
         public bool ReceiveFollower { get; set; }
         public bool ReceiveSubscriber { get; set; }

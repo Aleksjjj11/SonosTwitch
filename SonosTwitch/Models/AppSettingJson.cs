@@ -16,7 +16,6 @@ namespace SonosTwitch.Models
         private string _twitchChannel;
         private string _prefix;
         private string _speechCommand;
-        private string _videoReceiveOffer;
         private int _volumeTextSpeech;
         private bool _receiveFollower;
         private bool _receiveSubscriber;
@@ -71,16 +70,6 @@ namespace SonosTwitch.Models
             set
             {
                 _speechCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string VideoReceiveOffer
-        {
-            get => _videoReceiveOffer;
-            set
-            {
-                _videoReceiveOffer = value;
                 OnPropertyChanged();
             }
         }
@@ -231,7 +220,6 @@ namespace SonosTwitch.Models
             this.TimeLastSaved = setting.TimeLastSaved;
             this.CurrentVersion = setting.CurrentVersion;
             this.VolumeTextSpeech = setting.VolumeTextSpeech;
-            this.VideoReceiveOffer = setting.VideoReceiveOffer;
         }
     }
 }

@@ -32,7 +32,8 @@
         </DockPanel>
         <TabControl Grid.Row="1"
 					BorderThickness="0"
-					Padding="0">
+					Padding="0"
+                    Background="#4B4B56">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabItem}">
                     <Setter Property="BorderThickness" Value="0"></Setter>
@@ -67,12 +68,13 @@
             <TabItem Header="Commands">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="200" MaxWidth="250" Width="200"/>
+                        <ColumnDefinition MaxWidth="250" Width="189"/>
+                        <ColumnDefinition Width="11"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition MinWidth="150" MaxWidth="300" Width="200"/>
                     </Grid.ColumnDefinitions>
                     <ScrollViewer Grid.Column="0" 
-								  VerticalScrollBarVisibility="Hidden">
+								  VerticalScrollBarVisibility="Hidden" Grid.ColumnSpan="2">
                         <StackPanel  Background="#4B4B56" 
                                      Orientation="Vertical">
                             <TextBlock Text="CHANNEL" 
@@ -167,11 +169,26 @@
                             </Label>
                             <Label Style="{StaticResource LabelForTextBoxStyle}"
                                    Content="Video receive command"></Label>
-                            <TextBox Name="TextBox_VideoReceiveCommand" Margin="10 0 10 5" 
-							         Text="{Binding AppSetting.VideoReceiveOffer}" 
+                            <TextBox Name="TextBoxVideoReceiveCommand" 
+                                     Margin="10 0 10 5" 
+							         Text="{Binding AppSetting.CommandVideoReceiver}" 
 							         Height="20" 
 							         ToolTip="Command to receive video offers"
-							 Style="{StaticResource WindowTextBox}"/>
+                                     Style="{StaticResource WindowTextBox}"/>
+                            <Label Style="{StaticResource LabelForTextBoxStyle}"
+                                   Content="Music receive command"></Label>
+                            <TextBox Margin="10 0 10 5" 
+                                     Text="{Binding AppSetting.CommandMusicReceiver}" 
+                                     Height="20" 
+                                     ToolTip="Command to receive music offers"
+                                     Style="{StaticResource WindowTextBox}"/>
+                            <Label Style="{StaticResource LabelForTextBoxStyle}"
+                                   Content="Game receive command"></Label>
+                            <TextBox Margin="10 0 10 5" 
+                                     Text="{Binding AppSetting.CommandGameReceiver}" 
+                                     Height="20" 
+                                     ToolTip="Command to receive Game offers"
+                                     Style="{StaticResource WindowTextBox}"/>
                             <CheckBox Name="CheckBoxGetOffer" 
 							          Content="Get offer" 
 							          Style="{StaticResource WindowCheckBox}"
@@ -206,7 +223,7 @@
                             </Button>
                         </StackPanel>
                     </ScrollViewer>
-                    <Grid Grid.Column="1" 
+                    <Grid Grid.Column="2" 
 						  Background="#40404A">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -287,7 +304,7 @@
                             </Grid>
                         </Grid>
                     </Grid>
-                    <ScrollViewer Grid.Column="2" 
+                    <ScrollViewer Grid.Column="3" 
 								  CanContentScroll="True" 
 								  VerticalScrollBarVisibility="Hidden">
                         <ItemsControl Background="#4B4B56"
@@ -337,121 +354,354 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Offers">
-                <Grid Background="#36363D">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <DockPanel LastChildFill="False">
-                        <StackPanel DockPanel.Dock="Top" 
+                <TabControl BorderThickness="0"
+                            Padding="0"
+                            TabStripPlacement="Left">
+                    <TabControl.Resources>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="BorderThickness" Value="0"></Setter>
+                            <Setter Property="FontSize" Value="16"></Setter>
+                            <Setter Property="Foreground" Value="White"></Setter>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TabItem">
+                                        <Grid Name="GridTabItem"
+                                              Margin="0 10 10 0"
+                                              Width="100">
+                                            <Path Name="FillTabItem"  
+                                                  Fill="#686BA5">
+                                                <Path.Data>
+                                                    <RectangleGeometry Rect="-10, 0, 100, 40"
+                                                                       RadiusY="10"
+                                                                       RadiusX="10"></RectangleGeometry>
+                                                </Path.Data>
+                                            </Path>
+                                            <ContentPresenter VerticalAlignment="Center"
+                                                              HorizontalAlignment="Center"
+                                                              ContentSource="Header"
+                                                              Margin="10,0"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="FillTabItem" 
+                                                        Property="Fill" 
+                                                        Value="#5057E7"/>
+                                                <Setter TargetName="GridTabItem" 
+                                                        Property="Margin" 
+                                                        Value="0 10 -10 0"></Setter>
+                                                <Setter TargetName="FillTabItem" 
+                                                        Property="Data">
+                                                    <Setter.Value>
+                                                        <RectangleGeometry Rect="10, 0, 100, 40"
+                                                                           RadiusY="10"
+                                                                           RadiusX="10"></RectangleGeometry>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <!--<Trigger Property="IsSelected" Value="False">
+                                                
+                                            </Trigger>-->
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="FillTabItem" 
+                                                        Property="Fill" 
+                                                        Value="#5057E7"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                        <!--<ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#4B4B56" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="False">
+                                                <Setter TargetName="Border" Property="Background" Value="#36363D" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>-->
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.Resources>
+                    <TabItem Header="Video">
+                        <Grid Background="#36363D">
+                            <DockPanel LastChildFill="False">
+                                <StackPanel DockPanel.Dock="Top" 
                                     Orientation="Horizontal">
-                            <DockPanel LastChildFill="False" 
+                                    <DockPanel LastChildFill="False" 
                                        Margin="10">
-                                <wpf:ChromiumWebBrowser Height="250"
-                                                        Width="350" 
-                                                        Margin="5"
-                                                        Name="Browser" 
-                                                        DockPanel.Dock="Top"
-                                                        RenderTransformOrigin="0.5,0.5"
-                                                        Address="{Binding CurrentVideo.Url, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <Button Style="{StaticResource ButtonBlue}" 
-                                        Content="Next video" Width="90"
-                                        Margin="5"
-                                        DockPanel.Dock="Right"
-                                        Command="{Binding NextVideoCommand}"/>
-                                <Button Style="{StaticResource ButtonBlue}" 
-                                        Content="Previous video" Width="120"
-                                        Margin="5"
-                                        DockPanel.Dock="Left"
-                                        Command="{Binding PreviousVideoCommand}"/>
-                            </DockPanel>
-                            <StackPanel Orientation="Vertical">
-                                <DockPanel Margin="10">
-                                    <TextBlock DockPanel.Dock="Top"
-                                               Text="Reproducing"
-                                               TextWrapping="Wrap"
-                                               FontSize="24"
-                                               Foreground="White"/>
-                                    <TextBox DockPanel.Dock="Top"
-                                             Text="{Binding Path=CurrentVideo.VideoTitle,
-                                             Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                             Background="Transparent"
-                                             IsReadOnly="True"
-                                             Foreground="White"
-                                             BorderThickness="0"
-                                             TextWrapping="Wrap"
-                                             FontSize="28"/>
-                                    <TextBox DockPanel.Dock="Top"
-                                             Text="{Binding Path=CurrentVideo.VideoChannel,
-                                             Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                             Background="Transparent"
-                                             IsReadOnly="True"
-                                             TextWrapping="Wrap"
-                                             Foreground="White"
-                                             BorderThickness="0"
-                                             FontSize="22" 
-                                             Opacity="0.7"/>
-                                </DockPanel>
-                                <TextBox Margin="10"
-                                         Text="{Binding Path=CurrentVideo.Username,
-                                         Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Background="Transparent"
-                                         IsReadOnly="True"
-                                         TextWrapping="Wrap"
-                                         Foreground="White"
-                                         BorderThickness="0"
-                                         FontSize="16"
-                                         Opacity="0.7"/>
-                            </StackPanel>
-                        </StackPanel>
-                        <ScrollViewer DockPanel.Dock="Top">
-                            <ItemsControl ItemsSource="{Binding Path=CurrentQueue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Vertical" 
-                                                    Background="#232329"
-                                                    Margin="0 5">
-                                            <DockPanel Margin="10">
-                                                <TextBox DockPanel.Dock="Top"
-                                                         Text="{Binding Path=VideoTitle,
-                                                         Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                         Background="Transparent"
-                                                         IsReadOnly="True"
-                                                         TextWrapping="Wrap"
-                                                         Foreground="White"
-                                                         BorderThickness="0"
-                                                         FontSize="28"/>
-                                                <TextBox DockPanel.Dock="Top"
-                                                         Text="{Binding Path=VideoChannel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                         Background="Transparent"
-                                                         IsReadOnly="True"
-                                                         TextWrapping="Wrap"
-                                                         Foreground="White"
-                                                         BorderThickness="0"
-                                                         FontSize="22" 
-                                                         Opacity="0.7"/>
-                                            </DockPanel>
-                                            <TextBox Margin="10"
-                                                     Text="{Binding Path=Username, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                     Background="Transparent"
-                                                     IsReadOnly="True"
-                                                     TextWrapping="Wrap"
-                                                     Foreground="White"
-                                                     BorderThickness="0"
-                                                     FontSize="16"
-                                                     Opacity="0.7"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                        <Button DockPanel.Dock="Bottom"
+                                        <wpf:ChromiumWebBrowser Height="250"
+                                                                Width="350" 
+                                                                Margin="5"
+                                                                Name="Browser" 
+                                                                DockPanel.Dock="Top"
+                                                                RenderTransformOrigin="0.5,0.5"
+                                                                Address="{Binding CurrentVideo.Url, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Button Style="{StaticResource ButtonBlue}" 
+                                                Content="Next video" Width="90"
+                                                Margin="5"
+                                                DockPanel.Dock="Right"
+                                                Command="{Binding NextVideoCommand}"/>
+                                        <Button Style="{StaticResource ButtonBlue}" 
+                                                Content="Previous video" Width="120"
+                                                Margin="5"
+                                                DockPanel.Dock="Left"
+                                                Command="{Binding PreviousVideoCommand}"/>
+                                    </DockPanel>
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock DockPanel.Dock="Top"
+                                                   Text="Reproducing"
+                                                   TextWrapping="Wrap"
+                                                   FontSize="24"
+                                                   Foreground="White"/>
+                                        <TextBox DockPanel.Dock="Top"
+                                                 Text="{Binding Path=CurrentVideo.VideoTitle,
+                                                     Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="Transparent"
+                                                 MaxWidth="500"
+                                                 IsReadOnly="True"
+                                                 Foreground="White"
+                                                 BorderThickness="0"
+                                                 TextWrapping="Wrap"
+                                                 FontSize="28"/>
+                                        <TextBox DockPanel.Dock="Top"
+                                                 Text="{Binding Path=CurrentVideo.VideoChannel,
+                                                     Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="Transparent"
+                                                 IsReadOnly="True"
+                                                 TextWrapping="Wrap"
+                                                 Foreground="White"
+                                                 BorderThickness="0"
+                                                 FontSize="22" 
+                                                 MaxWidth="500"
+                                                 Opacity="0.7"/>
+                                        <TextBox Margin="10"
+                                                 Text="{Binding Path=CurrentVideo.Username,
+                                                 Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="Transparent"
+                                                 IsReadOnly="True"
+                                                 TextWrapping="Wrap"
+                                                 Foreground="White"
+                                                 BorderThickness="0"
+                                                 MaxWidth="500"
+                                                 FontSize="16"
+                                                 Opacity="0.7"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <ScrollViewer DockPanel.Dock="Top"
+                                              VerticalScrollBarVisibility="Hidden">
+                                    <ItemsControl ItemsSource="{Binding Path=CurrentVideoQueue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" 
+                                                            Background="#232329"
+                                                            Margin="0 5">
+                                                    <DockPanel Margin="10">
+                                                        <TextBox DockPanel.Dock="Top"
+                                                                 Text="{Binding Path=VideoTitle,
+                                                                 Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                 Background="Transparent"
+                                                                 IsReadOnly="True"
+                                                                 TextWrapping="Wrap"
+                                                                 Foreground="White"
+                                                                 BorderThickness="0"
+                                                                 FontSize="28"/>
+                                                        <TextBox DockPanel.Dock="Top"
+                                                                 Text="{Binding Path=VideoChannel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                 Background="Transparent"
+                                                                 IsReadOnly="True"
+                                                                 TextWrapping="Wrap"
+                                                                 Foreground="White"
+                                                                 BorderThickness="0"
+                                                                 FontSize="22" 
+                                                                 Opacity="0.7"/>
+                                                    </DockPanel>
+                                                    <TextBox Margin="10"
+                                                             Text="{Binding Path=Username, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                             Background="Transparent"
+                                                             IsReadOnly="True"
+                                                             TextWrapping="Wrap"
+                                                             Foreground="White"
+                                                             BorderThickness="0"
+                                                             FontSize="16"
+                                                             Opacity="0.7"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                                <Button DockPanel.Dock="Bottom"
                                 Style="{StaticResource ButtonGreen}"
                                 Height="30" Width="150" 
                                 FontSize="16"
                                 Margin="20"
                                 Content="Save offers"></Button>
-                    </DockPanel>
-                </Grid>
+                            </DockPanel>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Music">
+                        <Grid Background="#36363D">
+                            <DockPanel LastChildFill="False">
+                                <StackPanel DockPanel.Dock="Top" 
+                                        Orientation="Horizontal">
+                                    <DockPanel LastChildFill="False" 
+                                               Margin="10">
+                                        <wpf:ChromiumWebBrowser Height="250"
+                                                        Width="350" 
+                                                        Margin="5"
+                                                        DockPanel.Dock="Top"
+                                                        RenderTransformOrigin="0.5,0.5"
+                                                        Address="{Binding CurrentMusic.Url, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Button Style="{StaticResource ButtonBlue}" 
+                                                Content="Next video" Width="90"
+                                                Margin="5"
+                                                DockPanel.Dock="Right"
+                                                Command="{Binding NextMusicCommand}"/>
+                                        <Button Style="{StaticResource ButtonBlue}" 
+                                                Content="Previous video" Width="120"
+                                                Margin="5"
+                                                DockPanel.Dock="Left"
+                                                Command="{Binding PreviousMusicCommand}"/>
+                                    </DockPanel>
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock DockPanel.Dock="Top"
+                                                   Text="Reproducing"
+                                                   TextWrapping="Wrap"
+                                                   FontSize="24"
+                                                   Foreground="White"/>
+                                        <TextBox DockPanel.Dock="Top"
+                                                 Text="{Binding Path=CurrentMusic.VideoTitle,
+                                                     Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="Transparent"
+                                                 MaxWidth="450"
+                                                 IsReadOnly="True"
+                                                 Foreground="White"
+                                                 BorderThickness="0"
+                                                 TextWrapping="Wrap"
+                                                 FontSize="28"/>
+                                        <TextBox DockPanel.Dock="Top"
+                                                 Text="{Binding Path=CurrentMusic.VideoChannel,
+                                                     Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="Transparent"
+                                                 IsReadOnly="True"
+                                                 TextWrapping="Wrap"
+                                                 Foreground="White"
+                                                 BorderThickness="0"
+                                                 FontSize="22" 
+                                                 MaxWidth="500"
+                                                 Opacity="0.7"/>
+                                        <TextBox Margin="10"
+                                                 Text="{Binding Path=CurrentMusic.Username,
+                                                 Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="Transparent"
+                                                 IsReadOnly="True"
+                                                 TextWrapping="Wrap"
+                                                 Foreground="White"
+                                                 BorderThickness="0"
+                                                 MaxWidth="500"
+                                                 FontSize="16"
+                                                 Opacity="0.7"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <ScrollViewer DockPanel.Dock="Top"
+                                              VerticalScrollBarVisibility="Hidden">
+                                    <ItemsControl ItemsSource="{Binding Path=CurrentMusicQueue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" 
+                                                            Background="#232329"
+                                                            Margin="0 5">
+                                                    <DockPanel Margin="10">
+                                                        <TextBox DockPanel.Dock="Top"
+                                                                 Text="{Binding Path=VideoTitle,
+                                                                 Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                 Background="Transparent"
+                                                                 IsReadOnly="True"
+                                                                 TextWrapping="Wrap"
+                                                                 Foreground="White"
+                                                                 BorderThickness="0"
+                                                                 FontSize="28"/>
+                                                        <TextBox DockPanel.Dock="Top"
+                                                                 Text="{Binding Path=VideoChannel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                 Background="Transparent"
+                                                                 IsReadOnly="True"
+                                                                 TextWrapping="Wrap"
+                                                                 Foreground="White"
+                                                                 BorderThickness="0"
+                                                                 FontSize="22" 
+                                                                 Opacity="0.7"/>
+                                                    </DockPanel>
+                                                    <TextBox Margin="10"
+                                                             Text="{Binding Path=Username, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                             Background="Transparent"
+                                                             IsReadOnly="True"
+                                                             TextWrapping="Wrap"
+                                                             Foreground="White"
+                                                             BorderThickness="0"
+                                                             FontSize="16"
+                                                             Opacity="0.7"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                                <Button DockPanel.Dock="Bottom"
+                                        Style="{StaticResource ButtonGreen}"
+                                        Height="30" Width="150" 
+                                        FontSize="16"
+                                        Margin="20"
+                                        Content="Save offers"></Button>
+                            </DockPanel>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Game">
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden"
+                                      Background="#36363D">
+                            <ItemsControl ItemsSource="{Binding Path=GameOffers, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                          AlternationCount="150">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel LastChildFill="False"
+                                                   Name="OneGame"
+                                                   Tag="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource TemplatedParent}}"
+                                                   Background="#232329"
+                                                   Margin="0 10"
+                                                   Height="70">
+                                            <StackPanel Orientation="Vertical"
+                                                        DockPanel.Dock="Left">
+                                                <TextBox DockPanel.Dock="Top"
+                                                         Text="{Binding Path=GameName,
+                                                                 Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         Background="Transparent"
+                                                         IsReadOnly="True"
+                                                         TextWrapping="Wrap"
+                                                         Foreground="White"
+                                                         Margin="10 0"
+                                                         BorderThickness="0"
+                                                         FontSize="28"/>
+                                                <TextBox DockPanel.Dock="Top"
+                                                         Text="{Binding Path=Username, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         Background="Transparent"
+                                                         IsReadOnly="True"
+                                                         TextWrapping="Wrap"
+                                                         Foreground="White"
+                                                         Margin="20 0"
+                                                         BorderThickness="0"
+                                                         FontSize="22" 
+                                                         Opacity="0.7"/>
+                                            </StackPanel>
+                                            <Button Content="Skip"
+                                                    DockPanel.Dock="Right"
+                                                    DataContext="{Binding ElementName=MainWindows, Path=DataContext}"
+                                                    Command="{Binding DeleteGameOffer}"
+                                                    CommandParameter="{Binding ElementName=OneGame, Path=Tag}"
+                                                    Style="{StaticResource ButtonRed}"
+                                                    Margin="10"></Button>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+
             </TabItem>
             <TabItem Header="Account">
                 <Grid Background="#4B4B56">

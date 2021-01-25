@@ -19,12 +19,16 @@ namespace SonosTwitch.Models
     public class TwitchBot
     {
         public delegate void CommandReceived(object sender, OnMessageReceivedArgs e);
-
         public event CommandReceived Notify;
 
         public delegate void VideoOfferReceived(object sender, OnMessageReceivedArgs e);
-
         public event VideoOfferReceived OnVideoOfferReceived;
+
+        public delegate void GameOfferReceived(object sender, OnMessageReceivedArgs e);
+        public event GameOfferReceived OnGameOfferReceived;
+
+        public delegate void MusicOfferReceived(object sender, OnMessageReceivedArgs e);
+        public event MusicOfferReceived OnMusicOfferReceived;
         public TwitchClient Client { get; }
         private IAppSetting _setting;
 	
@@ -78,11 +82,25 @@ namespace SonosTwitch.Models
             {
                 if (e.ChatMessage.Message[0].ToString() == _setting.Prefix)
                 {
+                    //Check was received video offer
                     if (e.ChatMessage.Message.Split(' ')[0]
-                        .Remove(0, _setting.Prefix.Length) == _setting.VideoReceiveOffer)
+                        .Remove(0, _setting.Prefix.Length) == _setting.CommandVideoReceiver)
                     {
                         OnVideoOfferReceived?.Invoke(sender, e);
                     }
+                    //Check was received music offer
+                    else if (e.ChatMessage.Message.Split(' ')[0]
+                        .Remove(0, _setting.Prefix.Length) == _setting.CommandMusicReceiver)
+                    {
+                        OnMusicOfferReceived?.Invoke(sender, e);
+                    } 
+                    //Check was received game offer
+                    else if (e.ChatMessage.Message.Split(' ')[0]
+                        .Remove(0, _setting.Prefix.Length) == _setting.CommandGameReceiver)
+                    {
+                        OnGameOfferReceived?.Invoke(sender, e);
+                    }
+                    //Check was received usual command to play music
                     else
                     {
                         string res = _setting.DictionaryCommands.First(x => x.Command == $"{e.ChatMessage.Message.Replace(_setting.Prefix, "")}").PathSound;

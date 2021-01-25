@@ -61,32 +61,59 @@ namespace SonosTwitch.Models
             }
         }
 
-        public YoutubeVideoOffer(string url, string username)
+        public YoutubeVideoOffer(string url, string username, bool isUrl = true)
         {
             _baseClientService = new BaseClientService.Initializer()
             {
                 ApiKey = "AIzaSyD7IDc1i7nbaYb313WohrZOBr9c3CROuK8",
                 ApplicationName = "SonosTwitch"
             };
-            Url = url;
-            Username = username;
-            try
+            if (isUrl)
             {
-                var youtubeService = new YouTubeService(_baseClientService);
+                Url = url.Replace("watch?v=", "embed/");
+                Username = username;
+                try
+                {
+                    var youtubeService = new YouTubeService(_baseClientService);
 
-                var searchListRequest = youtubeService.Search.List("snippet");
-                searchListRequest.Q = url.Replace("embed/", "watch?v="); // Replace with your search term.
-                searchListRequest.MaxResults = 5;
+                    var searchListRequest = youtubeService.Search.List("snippet");
+                    searchListRequest.Q = url.Replace("embed/", "watch?v="); // Replace with your search term.
+                    searchListRequest.MaxResults = 5;
 
-                // Call the search.list method to retrieve results matching the specified query term.
-                var searchListResponse = searchListRequest.ExecuteAsync().Result;
-                var video = searchListResponse.Items.First(x => x.Id.Kind == "youtube#video");
-                VideoTitle = video.Snippet.Title;
-                VideoChannel = video.Snippet.ChannelTitle;
+                    // Call the search.list method to retrieve results matching the specified query term.
+                    var searchListResponse = searchListRequest.ExecuteAsync().Result;
+                    var video = searchListResponse.Items.First(x => x.Id.Kind == "youtube#video");
+                    VideoTitle = video.Snippet.Title;
+                    VideoChannel = video.Snippet.ChannelTitle;
+                   // Url = Url.IndexOf("https://www.youtube.com/embed/") < 0 ? $"https://www.youtube.com/embed/{video.Id}" : Url;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Debug.WriteLine(ex.Message);
+                Username = username;
+                try
+                {
+                    var youtubeService = new YouTubeService(_baseClientService);
+
+                    var searchListRequest = youtubeService.Search.List("snippet");
+                    searchListRequest.Q = url; 
+                    searchListRequest.MaxResults = 5;
+
+                    // Call the search.list method to retrieve results matching the specified query term.
+                    var searchListResponse = searchListRequest.ExecuteAsync().Result;
+                    var video = searchListResponse.Items.First(x => x.Id.Kind == "youtube#video");
+                    VideoTitle = video.Snippet.Title;
+                    VideoChannel = video.Snippet.ChannelTitle;
+                    Url = $"https://www.youtube.com/embed/{video.Id.VideoId}";
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
             
         }
