@@ -11,7 +11,7 @@
 
 * Запускаем ***SonosTwitch.exe***
 * Видим такое окно (ниже), не боимся и нажимаем ОК. <br>
-![Страшное окно](https://drive.google.com/file/d/1xkn2gt020woiUggiEIEbKdBTrfPIGKuR/view?usp=sharing)
+![](https://i.ibb.co/0t6QrXT/for-readme-1.png)
 * Видим главное окно приложение. <br>
 ![](https://avatars.mds.yandex.net/get-images-cbir/2958134/lU1n3VW5G8TiugHSvvoo9Q/ocr)
 * Дальше первым делом нажимаем на шестерню (сверху слева).
